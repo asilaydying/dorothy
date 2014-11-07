@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Dorothy</string>
+    <string name="hello_world">Szia Világ!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_category_list">CategoryList</string>
+    <string name="title_activity_second">Second</string>
+    <string name="title_activity_kategoriak">Kategoriak</string>
+
+</resources>
