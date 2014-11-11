@@ -41,7 +41,7 @@ public class KategoriakListaAdapter extends BaseAdapter {
 
         if(convertView == null){
             LayoutInflater inflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.category_list_item,null);
+            convertView = inflater.inflate(R.layout.kategoria_lista_elem,null);
             holder = new ViewHolder();
 
             convertView.setTag(holder);
@@ -53,7 +53,7 @@ public class KategoriakListaAdapter extends BaseAdapter {
         holder.txtText = (TextView) convertView.findViewById(R.id.KategoriaNev);
         //  holder.imgThumb = (ImageView) convertView.findViewById(R.id.imgThumb);
 
-        holder.txtText.setText(CategoryList.Category_name.get(position));
+        holder.txtText.setText(Kategoriak.Category_name.get(position));
         // imageLoader.DisplayImage(Utils.AdminPageURL+CategoryList.Category_image.get(position), holder.imgThumb);
 
         return convertView;
