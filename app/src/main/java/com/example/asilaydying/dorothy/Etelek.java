@@ -151,7 +151,7 @@ public class Etelek extends Activity {
                 item.id= UUID.fromString(object.getString("ID"));
                 item.price= object.getString("Ar");
                 item.name= object.getString("EtelNev");
-                item.desc= "desc";
+                item.desc= object.getString("Description");
 
                 eteleklista.add(item);
 
