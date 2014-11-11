@@ -7,5 +7,6 @@
     <string name="title_activity_category_list">CategoryList</string>
     <string name="title_activity_second">Second</string>
     <string name="title_activity_kategoriak">Kategoriak</string>
+    <string name="title_activity_etelek">Etelek</string>
 
 </resources>
