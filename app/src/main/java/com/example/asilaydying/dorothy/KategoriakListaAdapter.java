@@ -27,7 +27,7 @@ public class KategoriakListaAdapter extends BaseAdapter {
 
     public Object getItem(int position) {
         // TODO Auto-generated method stub
-        return position;
+        return Kategoriak.Category_ID.get(position);
     }
 
     public long getItemId(int position) {

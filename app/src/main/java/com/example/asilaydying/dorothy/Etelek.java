@@ -1,6 +1,7 @@
 package com.example.asilaydying.dorothy;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,18 +35,29 @@ public class Etelek extends Activity {
     ListView listView;
     EtelekListaAdapter adapter;
     ProgressBar prgLoading;
-    String KategoriakLink;
+    String EtelekLink;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_etelek);
 
+        //kategoria kivétele
+        Intent currentintent= getIntent();
+        Bundle bundle = currentintent.getExtras();
+
+        if(bundle!=null)
+        {
+            String catID =(String) bundle.get("catID");
+            EtelekLink = "http://dorothy.hu/Android/GetEtelekByKategoriaJson/"+catID;
+        }
+
+
         adapter = new EtelekListaAdapter(Etelek.this);
 
         listView = (ListView) findViewById(R.id.listEtelek);
 
-        KategoriakLink = "http://dorothy.hu/Android/GetEtelekByKategoriaJson/1";
+
         new getDataTask().execute();
 
     }
@@ -116,7 +128,7 @@ public class Etelek extends Activity {
             HttpClient client = new DefaultHttpClient();
             HttpConnectionParams.setConnectionTimeout(client.getParams(), 15000);
             HttpConnectionParams.setSoTimeout(client.getParams(), 15000);
-            HttpUriRequest request = new HttpGet(KategoriakLink);
+            HttpUriRequest request = new HttpGet(EtelekLink);
             HttpResponse response = client.execute(request);
             InputStream atomInputStream = response.getEntity().getContent();
             BufferedReader in = new BufferedReader(new InputStreamReader(atomInputStream));

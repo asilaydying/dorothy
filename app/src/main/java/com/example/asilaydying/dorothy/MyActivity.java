@@ -14,8 +14,12 @@ public class MyActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
 
-        //Intent intent = new Intent(this, Kategoriak.class);
-        Intent intent = new Intent(this, Etelek.class);
+        Intent intent = new Intent(this, Kategoriak.class);
+
+
+        //Intent intent = new Intent(this, Etelek.class);
+
+        //intent.putExtra("catID", "1");
 
         startActivity(intent);
     }

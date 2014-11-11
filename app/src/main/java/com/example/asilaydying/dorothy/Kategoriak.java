@@ -1,11 +1,14 @@
 package com.example.asilaydying.dorothy;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
@@ -51,11 +54,28 @@ public class Kategoriak extends Activity {
 //        Category_name.add(2,"harmadik elem");
         listView = (ListView) findViewById(R.id.listCategory);
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Intent intent = new Intent(Kategoriak.this, Etelek.class);
+                try {
+
+
+                    long asdf = (Long) (parent.getItemAtPosition(position));
+                    intent.putExtra("catID", String.valueOf(asdf));
+                } catch (Exception e) {
+                    Log.d("","");
+                }
+                startActivity(intent);
+            }
+        });
+
         KategoriakLink = "http://dorothy.hu/Android/GetKategoriakJson";
         new getDataTask().execute();
     }
 
-    void clearData(){
+    void clearData() {
         Category_ID.clear();
         Category_name.clear();
         Category_image.clear();
@@ -84,7 +104,7 @@ public class Kategoriak extends Activity {
     public class getDataTask extends AsyncTask<Void, Void, Void> {
 
         // show progressbar first
-        getDataTask(){
+        getDataTask() {
 //            if(!prgLoading.isShown()){
 //                prgLoading.setVisibility(0);
 //                txtAlert.setVisibility(8);
@@ -116,7 +136,7 @@ public class Kategoriak extends Activity {
         }
     }
 
-    public void parseJSONData(){
+    public void parseJSONData() {
 
         clearData();
 
@@ -132,7 +152,7 @@ public class Kategoriak extends Activity {
 
             String line;
             String str = "";
-            while ((line = in.readLine()) != null){
+            while ((line = in.readLine()) != null) {
                 str += line;
             }
 
@@ -147,7 +167,7 @@ public class Kategoriak extends Activity {
 
                 Category_ID.add(Long.parseLong(object.getString("ID")));
                 Category_name.add(object.getString("KategoriaNev"));
-               // Category_image.add(category.getString("Category_image"));
+                // Category_image.add(category.getString("Category_image"));
                 Log.d("Category name", Category_name.get(i));
 
             }
@@ -163,9 +183,7 @@ public class Kategoriak extends Activity {
         } catch (JSONException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
