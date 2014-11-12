@@ -2,6 +2,8 @@ package com.example.asilaydying.dorothy;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -155,10 +158,18 @@ public class Etelek extends Activity {
 
                 eteleklista.add(item);
 
-                //Category_name.add(object.getString("KategoriaNev"));
-                //Category_ID.add(Long.parseLong(object.getString("ID")));
-                // Category_image.add(category.getString("Category_image"));
-                //Log.d("Category name", Category_name.get(i));
+                String path = GlobalHelper.Website +object.getString("Link");
+                Bitmap bmp = null;
+                try {
+                    bmp = BitmapFactory.decodeStream(new URL(path).openConnection().getInputStream());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+                eteleklista.get(i).EtelKep = bmp;
 
             }
 

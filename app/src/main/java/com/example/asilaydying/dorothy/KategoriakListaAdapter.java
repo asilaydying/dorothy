@@ -2,11 +2,17 @@ package com.example.asilaydying.dorothy;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.io.IOException;
+import java.net.URL;
 
 /**
  * Created by asilaydying on 11/5/2014.
@@ -14,20 +20,20 @@ import android.widget.TextView;
 public class KategoriakListaAdapter extends BaseAdapter {
 
     private Activity activity;
-
+    public ImageLoader imageLoader;
     public KategoriakListaAdapter(Activity act) {
         this.activity = act;
-        //imageLoader = new ImageLoader(act);
+        imageLoader = new ImageLoader(act);
     }
 
     public int getCount() {
         // TODO Auto-generated method stub
-        return Kategoriak.Category_ID.size();
+        return Kategoriak.kategoriakLista.size();
     }
 
     public Object getItem(int position) {
         // TODO Auto-generated method stub
-        return Kategoriak.Category_ID.get(position);
+        return Kategoriak.kategoriakLista.get(position).Category_ID;
     }
 
     public long getItemId(int position) {
@@ -51,16 +57,17 @@ public class KategoriakListaAdapter extends BaseAdapter {
 
 
         holder.txtText = (TextView) convertView.findViewById(R.id.KategoriaNev);
-        //  holder.imgThumb = (ImageView) convertView.findViewById(R.id.imgThumb);
+        holder.imgThumb = (ImageView) convertView.findViewById(R.id.kepKat);
 
-        holder.txtText.setText(Kategoriak.Category_name.get(position));
-        // imageLoader.DisplayImage(Utils.AdminPageURL+CategoryList.Category_image.get(position), holder.imgThumb);
+        holder.txtText.setText(Kategoriak.kategoriakLista.get(position).Category_name);
+       // imageLoader.DisplayImage(GlobalHelper.KategoriaKepLink+Kategoriak.Category_ID.get(position) + ".jpg", holder.imgThumb);
 
+        holder.imgThumb.setImageBitmap(Kategoriak.kategoriakLista.get(position).KategoriaKep);
         return convertView;
     }
 
     static class ViewHolder {
         TextView txtText;
-        // ImageView imgThumb;
+        ImageView imgThumb;
     }
 }

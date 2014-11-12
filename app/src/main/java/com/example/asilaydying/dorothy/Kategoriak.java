@@ -2,6 +2,8 @@ package com.example.asilaydying.dorothy;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,14 +30,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 
 public class Kategoriak extends Activity {
 
-    static ArrayList<Long> Category_ID = new ArrayList<Long>();
-    static ArrayList<String> Category_name = new ArrayList<String>();
-    static ArrayList<String> Category_image = new ArrayList<String>();
+    static ArrayList<KategoriakItem> kategoriakLista = new ArrayList<KategoriakItem>();
+
     ListView listView;
     KategoriakListaAdapter adapter;
     ProgressBar prgLoading;
@@ -46,12 +48,7 @@ public class Kategoriak extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_kategoriak);
         adapter = new KategoriakListaAdapter(Kategoriak.this);
-//        Category_ID.add(0, (long) 1);
-//        Category_name.add(0,"elso elem");
-//        Category_ID.add(1, (long) 1);
-//        Category_name.add(1,"masodik elem");
-//        Category_ID.add(2, (long) 1);
-//        Category_name.add(2,"harmadik elem");
+
         listView = (ListView) findViewById(R.id.listCategory);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -76,9 +73,7 @@ public class Kategoriak extends Activity {
     }
 
     void clearData() {
-        Category_ID.clear();
-        Category_name.clear();
-        Category_image.clear();
+        kategoriakLista.clear();
     }
 
 
@@ -164,12 +159,28 @@ public class Kategoriak extends Activity {
                 JSONObject object = data.getJSONObject(i);
 
 //                JSONObject category = object.getJSONObject("Category");
-
-                Category_ID.add(Long.parseLong(object.getString("ID")));
-                Category_name.add(object.getString("KategoriaNev"));
+                KategoriakItem item = new KategoriakItem();
+                item.Category_ID = Long.parseLong(object.getString("ID"));
+                item.Category_name = object.getString("KategoriaNev");
                 // Category_image.add(category.getString("Category_image"));
-                Log.d("Category name", Category_name.get(i));
+                kategoriakLista.add(item);
 
+            }
+
+            for (int i =0;i < kategoriakLista.size();i++)
+            {
+                String path = GlobalHelper.KategoriaKepLink+kategoriakLista.get(i).Category_ID + ".jpg";
+                Bitmap bmp = null;
+                try {
+                    bmp = BitmapFactory.decodeStream(new URL(path).openConnection().getInputStream());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+                kategoriakLista.get(i).KategoriaKep = bmp;
             }
 
 

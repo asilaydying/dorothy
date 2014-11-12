@@ -1,11 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-    android:layout_height="50dp"
+    android:layout_height="fill_parent"
     android:layout_width="wrap_content"
+    android:padding="5dp"
     xmlns:android="http://schemas.android.com/apk/res/android">
+    <ImageView
+        android:id="@+id/kepKat"
+        android:layout_width="90dp"
+        android:layout_height="60dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:scaleType="centerCrop"
+        android:layout_marginRight="10dp"/>
     <TextView
         android:id="@+id/KategoriaNev"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="22sp"
+        android:layout_toRightOf="@id/kepKat"
+        android:layout_centerVertical="true"
+        />
 </RelativeLayout>
 

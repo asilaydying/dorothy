@@ -1,5 +1,7 @@
 package com.example.asilaydying.dorothy;
 
+import android.graphics.Bitmap;
+
 import java.util.UUID;
 
 /**
@@ -10,4 +12,5 @@ public class EtelItem {
     public String name;
     public String price;
     public String desc;
+    public Bitmap EtelKep;
 }

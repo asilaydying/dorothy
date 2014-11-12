@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
@@ -54,12 +55,12 @@ public class EtelekListaAdapter extends BaseAdapter {
         holder.txtName = (TextView) convertView.findViewById(R.id.EtelNev);
         holder.txtPrice = (TextView) convertView.findViewById(R.id.EtelAr);
         holder.txtDesc = (TextView) convertView.findViewById(R.id.EtelLeiras);
-        //  holder.imgThumb = (ImageView) convertView.findViewById(R.id.imgThumb);
+        holder.imgThumb = (ImageView) convertView.findViewById(R.id.etelKep);
         try {
             holder.txtName.setText(Etelek.eteleklista.get(position).name);
             holder.txtPrice.setText(Etelek.eteleklista.get(position).price);
             holder.txtDesc.setText(Etelek.eteleklista.get(position).desc);
-            // imageLoader.DisplayImage(Utils.AdminPageURL+CategoryList.Category_image.get(position), holder.imgThumb);
+            holder.imgThumb.setImageBitmap(Etelek.eteleklista.get(position).EtelKep);
         }
         catch (Exception e)
         {
@@ -71,5 +72,6 @@ public class EtelekListaAdapter extends BaseAdapter {
         TextView txtName;
         TextView txtPrice;
         TextView txtDesc;
+        ImageView imgThumb;
     }
 }
