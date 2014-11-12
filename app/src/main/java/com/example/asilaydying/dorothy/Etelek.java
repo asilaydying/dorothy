@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
@@ -60,7 +62,24 @@ public class Etelek extends Activity {
 
         listView = (ListView) findViewById(R.id.listEtelek);
 
+       listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+           @Override
+           public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+               Intent intent = new Intent(Etelek.this, EtelekReszlet.class);
+               try {
 
+                   EtelItem etelItem = (EtelItem) (parent.getItemAtPosition(position));
+
+                   intent.putExtra("etelKep",etelItem.EtelKep);
+                   intent.putExtra("etelNev",etelItem.name);
+                   intent.putExtra("etelLeiras",etelItem.desc);
+                   intent.putExtra("etelAr",etelItem.price);
+               } catch (Exception e) {
+                   Log.d("","");
+               }
+               startActivity(intent);
+           }
+       });
         new getDataTask().execute();
 
     }

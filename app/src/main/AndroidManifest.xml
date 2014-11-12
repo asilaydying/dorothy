@@ -35,6 +35,10 @@
             android:label="@string/title_activity_etelek"
             >
         </activity>
+        <activity
+            android:name=".EtelekReszlet"
+            android:label="@string/title_activity_etelek_reszlet" >
+        </activity>
     </application>
 
 </manifest>

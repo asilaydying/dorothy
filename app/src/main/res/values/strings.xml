@@ -6,7 +6,10 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_category_list">CategoryList</string>
     <string name="title_activity_second">Second</string>
-    <string name="title_activity_kategoriak">Kategoriak</string>
-    <string name="title_activity_etelek">Etelek</string>
+    <string name="title_activity_kategoriak">Kategóriák</string>
+    <string name="title_activity_etelek">Ételek</string>
+    <string name="title_activity_etelek_reszlet">EtelekReszlet</string>
+    <string name="reszletek">Részletek</string>
+    <string name="kosarba">Kosarba</string>
 
 </resources>
