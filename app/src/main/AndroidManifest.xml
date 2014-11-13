@@ -32,12 +32,15 @@
         </activity>
         <activity
             android:name=".Etelek"
-            android:label="@string/title_activity_etelek"
-            >
+            android:label="@string/title_activity_etelek" >
         </activity>
         <activity
             android:name=".EtelekReszlet"
             android:label="@string/title_activity_etelek_reszlet" >
+        </activity>
+        <activity
+            android:name=".Kosar"
+            android:label="@string/title_activity_kosar" >
         </activity>
     </application>
 

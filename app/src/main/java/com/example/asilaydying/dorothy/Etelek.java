@@ -25,6 +25,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -48,43 +49,101 @@ public class Etelek extends Activity {
         setContentView(R.layout.activity_etelek);
 
         //kategoria kivétele
-        Intent currentintent= getIntent();
+        Intent currentintent = getIntent();
         Bundle bundle = currentintent.getExtras();
 
-        if(bundle!=null)
-        {
-            String catID =(String) bundle.get("catID");
-            EtelekLink = "http://dorothy.hu/Android/GetEtelekByKategoriaJson/"+catID;
+        if (bundle != null) {
+            String catID = (String) bundle.get("catID");
+            EtelekLink = "http://dorothy.hu/Android/GetEtelekByKategoriaJson/" + catID;
         }
 
-
         adapter = new EtelekListaAdapter(Etelek.this);
-
         listView = (ListView) findViewById(R.id.listEtelek);
 
-       listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-           @Override
-           public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-               Intent intent = new Intent(Etelek.this, EtelekReszlet.class);
-               try {
+        MyDownloadManager manager = new MyDownloadManager(EtelekLink);
 
-                   EtelItem etelItem = (EtelItem) (parent.getItemAtPosition(position));
+        manager.setOnDownloadListener(new MyDownloadManager.OnDownloadListener() {
 
-                   intent.putExtra("etelKep",etelItem.EtelKep);
-                   intent.putExtra("etelNev",etelItem.name);
-                   intent.putExtra("etelLeiras",etelItem.desc);
-                   intent.putExtra("etelAr",etelItem.price);
-               } catch (Exception e) {
-                   Log.d("","");
-               }
-               startActivity(intent);
-           }
-       });
-        new getDataTask().execute();
+            @Override
+            public void onDownloadSuccess(String message) {
+                clearData();
+                try {
+                    JSONArray data = new JSONArray(message);
+
+                    for (int i = 0; i < data.length(); i++) {
+                        JSONObject object = data.getJSONObject(i);
+
+                        EtelItem item = new EtelItem();
+                        item.id = UUID.fromString(object.getString("ID"));
+                        item.price = object.getString("Ar");
+
+                        item.name = object.getString("EtelNev");
+
+                        item.desc = object.getString("Description");
+
+                        eteleklista.add(item);
+
+
+
+                        String path = GlobalHelper.Website + object.getString("Link");
+
+                        Bitmap bmp = GlobalHelper.CheckFile(object.getString("ID"),object.getString("PictureFileSize"),path,getApplicationContext());
+
+//                        Bitmap bmp = null;
+//                        try {
+//                            bmp = BitmapFactory.decodeStream(new URL(path).openConnection().getInputStream());
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+                        eteleklista.get(i).EtelKep = bmp;
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+                listView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        listView.setAdapter(adapter);
+                    }
+                });
+
+
+            }
+
+        });
+
+        manager.start();
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(Etelek.this, EtelekReszlet.class);
+                try {
+
+                    EtelItem etelItem = (EtelItem) (parent.getItemAtPosition(position));
+
+                    intent.putExtra("etelKep", etelItem.EtelKep);
+                    intent.putExtra("etelNev", etelItem.name);
+                    intent.putExtra("etelLeiras", etelItem.desc);
+                    intent.putExtra("etelAr", etelItem.price);
+                } catch (Exception e) {
+                    Log.d("", "");
+                }
+                startActivity(intent);
+            }
+        });
+        //new getDataTask().execute();
 
     }
 
-    void clearData(){
+    void clearData() {
         eteleklista.clear();
     }
 
@@ -106,10 +165,11 @@ public class Etelek extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
+
     public class getDataTask extends AsyncTask<Void, Void, Void> {
 
         // show progressbar first
-        getDataTask(){
+        getDataTask() {
 //            if(!prgLoading.isShown()){
 //                prgLoading.setVisibility(0);
 //                txtAlert.setVisibility(8);
@@ -141,7 +201,7 @@ public class Etelek extends Activity {
         }
     }
 
-    public void parseJSONData(){
+    public void parseJSONData() {
 
         clearData();
 
@@ -157,7 +217,7 @@ public class Etelek extends Activity {
 
             String line;
             String str = "";
-            while ((line = in.readLine()) != null){
+            while ((line = in.readLine()) != null) {
                 str += line;
             }
 
@@ -170,22 +230,20 @@ public class Etelek extends Activity {
 
 //                JSONObject category = object.getJSONObject("Category");
                 EtelItem item = new EtelItem();
-                item.id= UUID.fromString(object.getString("ID"));
-                item.price= object.getString("Ar");
-                item.name= object.getString("EtelNev");
-                item.desc= object.getString("Description");
+                item.id = UUID.fromString(object.getString("ID"));
+                item.price = object.getString("Ar");
+                item.name = object.getString("EtelNev");
+                item.desc = object.getString("Description");
 
                 eteleklista.add(item);
 
-                String path = GlobalHelper.Website +object.getString("Link");
+                String path = GlobalHelper.Website + object.getString("Link");
                 Bitmap bmp = null;
                 try {
                     bmp = BitmapFactory.decodeStream(new URL(path).openConnection().getInputStream());
                 } catch (IOException e) {
                     e.printStackTrace();
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 eteleklista.get(i).EtelKep = bmp;
@@ -203,9 +261,7 @@ public class Etelek extends Activity {
         } catch (JSONException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
