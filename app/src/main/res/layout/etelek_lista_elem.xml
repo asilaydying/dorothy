@@ -1,42 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    android:padding="5dp"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:padding="5dp">
+
     <ImageView
         android:id="@+id/etelKep"
         android:layout_width="90dp"
         android:layout_height="60dp"
-        android:layout_marginRight="10dp"
-        android:scaleType="centerCrop"
         android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"/>
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dp"
+        android:scaleType="centerCrop" />
+
     <LinearLayout
         android:id="@+id/lytText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/etelKep"
-        android:layout_centerVertical="true">
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/EtelNev"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        />
-    <TextView
-        android:id="@+id/EtelLeiras"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toLeftOf="@+id/EtelNev"
-        />
-    <TextView
-        android:id="@+id/EtelAr"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:layout_toLeftOf="@+id/EtelLeiras"/>
+        <TextView
+            android:id="@+id/EtelNev"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true" />
+
+        <TextView
+            android:id="@+id/EtelLeiras"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/EtelNev" />
+
+        <TextView
+            android:id="@+id/EtelAr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/EtelLeiras"
+            android:textStyle="bold" />
     </LinearLayout>
 </RelativeLayout>

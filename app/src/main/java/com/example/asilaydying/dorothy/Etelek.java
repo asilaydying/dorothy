@@ -1,6 +1,7 @@
 package com.example.asilaydying.dorothy;
 
 import android.app.Activity;
+import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -42,6 +43,7 @@ public class Etelek extends Activity {
     EtelekListaAdapter adapter;
     ProgressBar prgLoading;
     String EtelekLink;
+    MenuItem item;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,20 +76,23 @@ public class Etelek extends Activity {
                         JSONObject object = data.getJSONObject(i);
 
                         EtelItem item = new EtelItem();
-                        item.id = UUID.fromString(object.getString("ID"));
-                        item.price = object.getString("Ar");
+                        item.setId(UUID.fromString(object.getString("ID")));
+                        item.setPrice( object.getString("Ar"));
+                        item.setLink(GlobalHelper.Website + object.getString("Link"));
+                        item.setFilesize( object.getString("PictureFileSize"));
 
-                        item.name = object.getString("EtelNev");
+                        item.setName(object.getString("EtelNev"));
 
-                        item.desc = object.getString("Description");
+                        item.setDesc(object.getString("Description"));
+                        item.setNeedAdditional(Boolean.parseBoolean(object.getString("NeedAdditionalCategory")));
+                        item.setAdditionalKaja(object.getString("AdditionalCategoryId"));
 
                         eteleklista.add(item);
 
 
-
                         String path = GlobalHelper.Website + object.getString("Link");
 
-                        Bitmap bmp = GlobalHelper.CheckFile(object.getString("ID"),object.getString("PictureFileSize"),path,getApplicationContext());
+                        Bitmap bmp = GlobalHelper.CheckFile(object.getString("ID"), object.getString("PictureFileSize"), path, getApplicationContext());
 
 //                        Bitmap bmp = null;
 //                        try {
@@ -97,14 +102,12 @@ public class Etelek extends Activity {
 //                        } catch (Exception e) {
 //                            e.printStackTrace();
 //                        }
-                        eteleklista.get(i).EtelKep = bmp;
+                        eteleklista.get(i).setEtelKep(bmp);
 
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 listView.post(new Runnable() {
@@ -129,18 +132,21 @@ public class Etelek extends Activity {
 
                     EtelItem etelItem = (EtelItem) (parent.getItemAtPosition(position));
 
-                    intent.putExtra("etelKep", etelItem.EtelKep);
-                    intent.putExtra("etelNev", etelItem.name);
-                    intent.putExtra("etelLeiras", etelItem.desc);
-                    intent.putExtra("etelAr", etelItem.price);
+                    intent.putExtra("etelLink", etelItem.getLink());
+                    intent.putExtra("etelfilesize", etelItem.getFilesize());
+                    intent.putExtra("etelNev", etelItem.getName());
+                    intent.putExtra("etelLeiras", etelItem.getDesc());
+                    intent.putExtra("etelAr", etelItem.getPrice());
+                    intent.putExtra("etelID", etelItem.getId());
+                    intent.putExtra("eteladdID", etelItem.getAdditionalKaja());
+                    intent.putExtra("needaddID", etelItem.isNeedAdditional());
+
                 } catch (Exception e) {
                     Log.d("", "");
                 }
                 startActivity(intent);
             }
         });
-        //new getDataTask().execute();
-
     }
 
     void clearData() {
@@ -151,6 +157,24 @@ public class Etelek extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.etelek, menu);
+
+        try {
+            item = menu.findItem(R.id.action_settings);
+            item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+
+                    Intent intent = new Intent(Etelek.this, Kosar.class);
+
+                    startActivity(intent);
+
+                    return false;
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return true;
     }
 
@@ -166,103 +190,4 @@ public class Etelek extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public class getDataTask extends AsyncTask<Void, Void, Void> {
-
-        // show progressbar first
-        getDataTask() {
-//            if(!prgLoading.isShown()){
-//                prgLoading.setVisibility(0);
-//                txtAlert.setVisibility(8);
-//            }
-        }
-
-        @Override
-        protected Void doInBackground(Void... arg0) {
-            // TODO Auto-generated method stub
-            // parse json data from server in background
-            parseJSONData();
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            // TODO Auto-generated method stub
-            // when finish parsing, hide progressbar
-//            prgLoading.setVisibility(8);
-            listView.setAdapter(adapter);
-            // if internet connection and data available show data on list
-            // otherwise, show alert text
-//            if((Category_ID.size() > 0) && (IOConnect == 0)){
-//                listCategory.setVisibility(0);
-//                listCategory.setAdapter(cla);
-//            }else{
-//                txtAlert.setVisibility(0);
-//            }
-        }
-    }
-
-    public void parseJSONData() {
-
-        clearData();
-
-        try {
-            // request data from Category API
-            HttpClient client = new DefaultHttpClient();
-            HttpConnectionParams.setConnectionTimeout(client.getParams(), 15000);
-            HttpConnectionParams.setSoTimeout(client.getParams(), 15000);
-            HttpUriRequest request = new HttpGet(EtelekLink);
-            HttpResponse response = client.execute(request);
-            InputStream atomInputStream = response.getEntity().getContent();
-            BufferedReader in = new BufferedReader(new InputStreamReader(atomInputStream));
-
-            String line;
-            String str = "";
-            while ((line = in.readLine()) != null) {
-                str += line;
-            }
-
-            // parse json data and store into arraylist variables
-            //JSONObject json = new JSONObject(str);
-            JSONArray data = new JSONArray(str);
-
-            for (int i = 0; i < data.length(); i++) {
-                JSONObject object = data.getJSONObject(i);
-
-//                JSONObject category = object.getJSONObject("Category");
-                EtelItem item = new EtelItem();
-                item.id = UUID.fromString(object.getString("ID"));
-                item.price = object.getString("Ar");
-                item.name = object.getString("EtelNev");
-                item.desc = object.getString("Description");
-
-                eteleklista.add(item);
-
-                String path = GlobalHelper.Website + object.getString("Link");
-                Bitmap bmp = null;
-                try {
-                    bmp = BitmapFactory.decodeStream(new URL(path).openConnection().getInputStream());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                eteleklista.get(i).EtelKep = bmp;
-
-            }
-
-
-        } catch (MalformedURLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            //IOConnect = 1;
-            e.printStackTrace();
-        } catch (JSONException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }

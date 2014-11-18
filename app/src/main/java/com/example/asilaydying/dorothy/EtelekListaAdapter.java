@@ -57,10 +57,10 @@ public class EtelekListaAdapter extends BaseAdapter {
         holder.txtDesc = (TextView) convertView.findViewById(R.id.EtelLeiras);
         holder.imgThumb = (ImageView) convertView.findViewById(R.id.etelKep);
         try {
-            holder.txtName.setText(Etelek.eteleklista.get(position).name);
-            holder.txtPrice.setText(Etelek.eteleklista.get(position).price);
-            holder.txtDesc.setText(Etelek.eteleklista.get(position).desc);
-            holder.imgThumb.setImageBitmap(Etelek.eteleklista.get(position).EtelKep);
+            holder.txtName.setText(Etelek.eteleklista.get(position).getName());
+            holder.txtPrice.setText(Etelek.eteleklista.get(position).getPrice());
+            holder.txtDesc.setText(Etelek.eteleklista.get(position).getDesc());
+            holder.imgThumb.setImageBitmap(Etelek.eteleklista.get(position).getEtelKep());
         }
         catch (Exception e)
         {
