@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * Created by asilaydying on 11/12/2014.
@@ -20,6 +22,7 @@ import java.net.URLConnection;
 public class GlobalHelper {
     public static String KategoriaKepLink = "http://dorothy.hu/img/Kategoriak/";
     public static String Website = "http://dorothy.hu/";
+    public static String PrefFileUserData = "username";
 
     public static Bitmap CheckFile(String id, String size, String path, Context context) {
         try {
@@ -84,4 +87,28 @@ public class GlobalHelper {
         return bmp;
     }
 
+    public static final String md5(final String s) {
+        final String MD5 = "MD5";
+        try {
+            // Create MD5 Hash
+            MessageDigest digest = java.security.MessageDigest
+                    .getInstance(MD5);
+            digest.update(s.getBytes());
+            byte messageDigest[] = digest.digest();
+
+            // Create Hex String
+            StringBuilder hexString = new StringBuilder();
+            for (byte aMessageDigest : messageDigest) {
+                String h = Integer.toHexString(0xFF & aMessageDigest);
+                while (h.length() < 2)
+                    h = "0" + h;
+                hexString.append(h);
+            }
+            return hexString.toString();
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
 }

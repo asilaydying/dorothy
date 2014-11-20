@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/kosar_index"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/hello_world"
+        android:gravity="center|center_vertical|center_horizontal"
+        android:layout_weight="1" />
+
+    <TextView
+        android:id="@+id/kosar_name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/hello_world"
+        android:gravity="center|center_vertical|center_horizontal"
+        android:layout_weight="1" />
+
+    <TextView
+        android:id="@+id/kosar_count"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/hello_world"
+        android:gravity="center|center_vertical|center_horizontal"
+        android:layout_weight="1" />
+
+    <TextView
+        android:id="@+id/kosar_sum"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/hello_world"
+        android:gravity="center|center_vertical|center_horizontal"
+        android:layout_weight="1" />
+
+</LinearLayout>

@@ -3,11 +3,13 @@ package com.example.asilaydying.dorothy;
 import android.app.Activity;
 import android.app.DownloadManager;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -33,6 +35,9 @@ public class EtelekReszlet extends Activity {
     Boolean NeedAdditional;
     ListView listView;
 
+    String user;
+    MenuItem item;
+
 
     static ArrayList<EtelekReszletItem> etelekreszleteklista = new ArrayList<EtelekReszletItem>();
     static List<String> addlista = new ArrayList<String>();
@@ -43,6 +48,9 @@ public class EtelekReszlet extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_etelek_reszlet);
+
+        SharedPreferences settings = getSharedPreferences(GlobalHelper.PrefFileUserData, 0);
+        user = settings.getString("username", null);
 
         Intent currentintent = getIntent();
         Bundle bundle = currentintent.getExtras();
@@ -75,7 +83,6 @@ public class EtelekReszlet extends Activity {
         MyDownloadManager manager = new MyDownloadManager("http://dorothy.hu/Android/GetEtelekByKategoriaJson/" + additionalID);
 
 
-
         adapter = new EtelekReszletListaAdapter(EtelekReszlet.this);
 
         AddButton = (Button) findViewById(R.id.btnAdd);
@@ -93,7 +100,7 @@ public class EtelekReszlet extends Activity {
                     addlista.add("Nem kérek köretet");
                     addlistakey.add("null");
 
-                    etelekreszleteklista.add(new EtelekReszletItem(addlista.get(0),addlistakey.get(0)));
+                    etelekreszleteklista.add(new EtelekReszletItem(addlista.get(0), addlistakey.get(0)));
 
                     JSONArray data = new JSONArray(message);
 
@@ -121,7 +128,13 @@ public class EtelekReszlet extends Activity {
         AddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String link = "http://dorothy.hu/Android/Kosarba?UserName=judit.komlosi@gmail.com&id=" + ID.toString();
+                String link = "http://dorothy.hu/Android/KosarbaKorettel?UserName=" + user + "&productid=" + ID.toString();
+
+                link+="&mennyiseg="+etelekreszleteklista.size();
+
+                for(int i = 0; i < etelekreszleteklista.size(); i++)  {
+                    link+="&additionalok="+etelekreszleteklista.get(i).getAddID();
+                }
 
                 MyDownloadManager manager = new MyDownloadManager(link);
 
@@ -133,6 +146,7 @@ public class EtelekReszlet extends Activity {
                                 @Override
                                 public void run() {
                                     Toast.makeText(getApplicationContext(), "A termék a kosárba került", Toast.LENGTH_LONG).show();
+                                    finish();
                                 }
                             });
                         } else {
@@ -155,7 +169,7 @@ public class EtelekReszlet extends Activity {
                 int darab = Integer.parseInt(String.valueOf(count.getText()));
                 count.setText(String.valueOf(++darab));
                 if (NeedAdditional) {
-                    etelekreszleteklista.add(new EtelekReszletItem(addlista.get(0),addlistakey.get(0)));
+                    etelekreszleteklista.add(new EtelekReszletItem(addlista.get(0), addlistakey.get(0)));
                     listView.post(new Runnable() {
                         @Override
                         public void run() {
@@ -172,7 +186,7 @@ public class EtelekReszlet extends Activity {
                 int darab = Integer.parseInt(String.valueOf(count.getText()));
                 count.setText(String.valueOf(--darab));
                 if (NeedAdditional) {
-                    etelekreszleteklista.remove(etelekreszleteklista.size()-1);
+                    etelekreszleteklista.remove(etelekreszleteklista.size() - 1);
                     listView.post(new Runnable() {
                         @Override
                         public void run() {
@@ -197,6 +211,24 @@ public class EtelekReszlet extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.etelek_reszlet, menu);
+
+        try {
+            item = menu.findItem(R.id.action_settings);
+            item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+
+                    Intent intent = new Intent(EtelekReszlet.this, Kosar.class);
+
+                    startActivity(intent);
+
+                    return false;
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return true;
     }
 

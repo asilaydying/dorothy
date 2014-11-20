@@ -2,6 +2,7 @@ package com.example.asilaydying.dorothy;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -42,11 +43,33 @@ public class Kategoriak extends Activity {
     KategoriakListaAdapter adapter;
     ProgressBar prgLoading;
     String KategoriakLink;
+    String user;
+
+    MenuItem item;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_kategoriak);
+
+
+        //check username
+        try {
+
+            SharedPreferences settings = getSharedPreferences(GlobalHelper.PrefFileUserData, 0);
+            user= settings.getString("username", null);
+            if (user==null)
+            {
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putString("username", "zabomate@gmail.com");
+                editor.commit();
+            }
+            user= settings.getString("username", null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
         adapter = new KategoriakListaAdapter(Kategoriak.this);
 
         listView = (ListView) findViewById(R.id.listCategory);
@@ -62,7 +85,7 @@ public class Kategoriak extends Activity {
                     long asdf = (Long) (parent.getItemAtPosition(position));
                     intent.putExtra("catID", String.valueOf(asdf));
                 } catch (Exception e) {
-                    Log.d("","");
+                    Log.d("", "");
                 }
                 startActivity(intent);
             }
@@ -81,6 +104,24 @@ public class Kategoriak extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.kategoriak, menu);
+
+        try {
+            item = menu.findItem(R.id.action_settings);
+            item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+
+                    Intent intent = new Intent(Kategoriak.this, Kosar.class);
+
+                    startActivity(intent);
+
+                    return false;
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return true;
     }
 
@@ -167,17 +208,14 @@ public class Kategoriak extends Activity {
 
             }
 
-            for (int i =0;i < kategoriakLista.size();i++)
-            {
-                String path = GlobalHelper.KategoriaKepLink+kategoriakLista.get(i).Category_ID + ".jpg";
+            for (int i = 0; i < kategoriakLista.size(); i++) {
+                String path = GlobalHelper.KategoriaKepLink + kategoriakLista.get(i).Category_ID + ".jpg";
                 Bitmap bmp = null;
                 try {
                     bmp = BitmapFactory.decodeStream(new URL(path).openConnection().getInputStream());
                 } catch (IOException e) {
                     e.printStackTrace();
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 kategoriakLista.get(i).KategoriaKep = bmp;

@@ -12,5 +12,11 @@
     <string name="reszletek">Részletek</string>
     <string name="kosarba">Kosarba</string>
     <string name="title_activity_kosar">Kosar</string>
+    <string name="felhasznalonev">Felhasználónév</string>
+    <string name="jelszo">Jelszó</string>
+    <string name="buttonbejelentkezes">Bejelentkezés</string>
+    <string name="email">E-mail</string>
+    <string name="jelszoujra">Jelszó újra</string>
+    <string name="buttonregisztracio">Regisztráció</string>
 
 </resources>
