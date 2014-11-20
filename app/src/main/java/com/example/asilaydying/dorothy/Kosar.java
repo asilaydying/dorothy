@@ -1,12 +1,14 @@
 package com.example.asilaydying.dorothy;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -21,6 +23,7 @@ public class Kosar extends Activity {
     TableLayout tl;
     TextView txt;
     String user;
+    Button cimvalaszt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +34,7 @@ public class Kosar extends Activity {
         user = settings.getString("username", null);
 
         tl = (TableLayout) findViewById(R.id.tableLayout);
+        cimvalaszt = (Button) findViewById(R.id.buttoncimvalasztas);
 
         final TableRow tr = new TableRow(this);
 
@@ -38,7 +42,7 @@ public class Kosar extends Activity {
 
         txt = (TextView) findViewById(R.id.Kosarszumma);
 
-        String link = "http://dorothy.hu/Android/KosarLekerdez?UserName="+user;
+        String link = "http://dorothy.hu/Android/KosarLekerdez?UserName=" + user;
 
         final MyDownloadManager manager = new MyDownloadManager(link);
 
@@ -53,7 +57,7 @@ public class Kosar extends Activity {
                     for (int i = 0; i < array.length(); i++) {
                         JSONObject object = array.getJSONObject(i);
 
-                        addRow(object.getString("Index"),object.getString("ProductName"),object.getString("ProductCnt"),object.getString("ProductAmountSum"),Boolean.parseBoolean(object.getString("IsAdditionalFood")));
+                        addRow(object.getString("Index"), object.getString("ProductName"), object.getString("ProductCnt"), object.getString("ProductAmountSum"), Boolean.parseBoolean(object.getString("IsAdditionalFood")));
 
                     }
 
@@ -72,6 +76,14 @@ public class Kosar extends Activity {
             }
         });
         manager.start();
+
+        cimvalaszt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Kosar.this, CimValasztas.class);
+                startActivity(intent);
+            }
+        });
 
     }
 
@@ -95,10 +107,9 @@ public class Kosar extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void addRow(String index, String name, String count, String sum, boolean isAdditional)
-    {
+    private void addRow(String index, String name, String count, String sum, boolean isAdditional) {
         final TableRow tr = new TableRow(this);
-        LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,1.0f);
+        LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1.0f);
         tr.setLayoutParams(lp);
 
         View view;
@@ -116,8 +127,7 @@ public class Kosar extends Activity {
             holder.tvname.setText(name);
             holder.tvcounter.setText(count);
             holder.tvsum.setText(sum);
-        }
-        else {
+        } else {
             view = LayoutInflater.from(this).inflate(R.layout.kosar_item_sub, null);
 
             ViewHolder_sub holder = new ViewHolder_sub();
@@ -178,12 +188,14 @@ public class Kosar extends Activity {
 //        });
 
     }
+
     static class ViewHolder_main {
         TextView tvindex;
         TextView tvname;
         TextView tvcounter;
         TextView tvsum;
     }
+
     static class ViewHolder_sub {
         TextView tvname;
         TextView tvcounter;

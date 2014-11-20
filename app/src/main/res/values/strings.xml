@@ -18,5 +18,8 @@
     <string name="email">E-mail</string>
     <string name="jelszoujra">Jelszó újra</string>
     <string name="buttonregisztracio">Regisztráció</string>
+    <string name="title_activity_cim_valasztas">CimValasztas</string>
+    <string name="btncimvalasztas">Tovább a címválasztáshoz</string>
+    <string name="title_activity_megerosites">Megerosites</string>
 
 </resources>

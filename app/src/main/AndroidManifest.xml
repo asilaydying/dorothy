@@ -42,6 +42,14 @@
             android:name=".Kosar"
             android:label="@string/title_activity_kosar" >
         </activity>
+        <activity
+            android:name=".CimValasztas"
+            android:label="@string/title_activity_cim_valasztas" >
+        </activity>
+        <activity
+            android:name=".Megerosites"
+            android:label="@string/title_activity_megerosites" >
+        </activity>
     </application>
 
 </manifest>
