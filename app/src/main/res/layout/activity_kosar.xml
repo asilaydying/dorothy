@@ -37,36 +37,7 @@
                 android:layout_below="@+id/Kosarszumma"
                 android:layout_weight="10.06">
 
-                <!--<TableRow-->
-                <!--android:layout_width="fill_parent"-->
-                <!--android:layout_height="wrap_content">-->
 
-                <!--<TextView-->
-                <!--android:text="@string/hello_world"-->
-                <!--android:layout_width="fill_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:id="@+id/Kosarszumma1"-->
-                <!--android:layout_weight="50"-->
-                <!--android:gravity="center"-->
-                <!--/>-->
-                <!--<TextView-->
-                <!--android:text="@string/hello_world"-->
-                <!--android:layout_width="fill_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:id="@+id/Kosarszumma2"-->
-                <!--android:layout_weight="50"-->
-                <!--android:gravity="center"-->
-                <!--/>-->
-                <!--<TextView-->
-                <!--android:text="@string/hello_world"-->
-                <!--android:layout_width="fill_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:id="@+id/Kosarszumma3"-->
-                <!--android:layout_weight="50"-->
-                <!--android:gravity="center"-->
-
-                <!--/>-->
-                <!--</TableRow>-->
             </TableLayout>
 
             <Button

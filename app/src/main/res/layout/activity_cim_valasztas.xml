@@ -37,36 +37,36 @@
             <Spinner
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/spinner" />
+                android:id="@+id/kerulet" />
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/editText"
+                android:id="@+id/txtutca"
                 android:hint="Utca"/>
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/editText2"
+                android:id="@+id/txthazszam"
                 android:hint="Házszám"/>
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/editText3"
+                android:id="@+id/txtemelet"
                 android:hint="Emelet, ajtó"/>
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/editText4"
+                android:id="@+id/txtkapucsengo"
                 android:hint="Kapucsengő"/>
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/editText5"
+                android:id="@+id/txtmegjegyzes"
                 android:hint="Megjegyzés"/>
 
             <Button

@@ -1,17 +1,27 @@
 package com.example.asilaydying.dorothy;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 public class CimValasztas extends Activity {
@@ -19,6 +29,13 @@ public class CimValasztas extends Activity {
     RadioGroup cimekgroup;
     String user;
     Button btnmegerosit;
+    EditText utca;
+    EditText hazszam;
+    EditText emelet;
+    EditText kapucsengo;
+    EditText megjegyzes;
+    Spinner kerulet;
+    List<String> keruletlista = Arrays.asList("I. kerület", "II. kerület", "XII. kerület");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,9 +46,23 @@ public class CimValasztas extends Activity {
         user = settings.getString("username", null);
 
         cimekgroup = (RadioGroup) findViewById(R.id.cimekgroup);
-        btnmegerosit= (Button) findViewById(R.id.buttonmegerosit);
+        btnmegerosit = (Button) findViewById(R.id.buttonmegerosit);
+
+        utca = (EditText) findViewById(R.id.txtutca);
+        hazszam = (EditText) findViewById(R.id.txtutca);
+        emelet = (EditText) findViewById(R.id.txtutca);
+        kapucsengo = (EditText) findViewById(R.id.txtutca);
+        megjegyzes = (EditText) findViewById(R.id.txtutca);
+        kerulet = (Spinner) findViewById(R.id.kerulet);
 
         String link = "http://dorothy.hu/Android/GetAddresses?username=" + user;
+
+        ArrayAdapter<String> adapter;
+        adapter = new ArrayAdapter<String>(CimValasztas.this, android.R.layout.simple_spinner_dropdown_item, keruletlista);
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        kerulet.setAdapter(adapter);
 
         MyDownloadManager manager = new MyDownloadManager(link);
 
@@ -53,13 +84,14 @@ public class CimValasztas extends Activity {
 
                     final RadioButton radio = new RadioButton(CimValasztas.this);
                     radio.setId(-1);
+                    radio.setTag(-1);
                     radio.setText("Új cím");
 
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             cimekgroup.addView(radio);
-                            if (array.length()==0) {
+                            if (array.length() == 0) {
                                 cimekgroup.check(-1);
                             }
                         }
@@ -75,7 +107,26 @@ public class CimValasztas extends Activity {
         btnmegerosit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                int radioButtonID = cimekgroup.getCheckedRadioButtonId();
+                RadioButton radioButton = (RadioButton) cimekgroup.findViewById(radioButtonID);
+                int id = (Integer)radioButton.getTag();
+                if (id == -1)//új cím
+                {
+                    if (utca.getText().toString().matches("") || hazszam.getText().toString().matches("")) {
+                        Toast.makeText(getApplicationContext(), "Az utca és a házszám kitöltése kötelező!", Toast.LENGTH_LONG).show();
+                        return;
+                    } else {//új cím felvétele
 
+                    }
+                }
+                else {
+                    Intent intent = new Intent(CimValasztas.this, Megerosites.class);
+
+                    intent.putExtra("cim", radioButton.getText().toString());
+                    intent.putExtra("cimid", id);
+
+                    startActivity(intent);
+                }
             }
         });
 
@@ -104,6 +155,7 @@ public class CimValasztas extends Activity {
     private void addRadio(String cim, final int cimid, final boolean isChecked) {
         final RadioButton radio = new RadioButton(this);
         radio.setId(cimid);
+        radio.setTag(cimid);
         radio.setText(cim);
 
 

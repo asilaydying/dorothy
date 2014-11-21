@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +22,13 @@ public class MyActivity extends Activity {
     EditText loginpass;
     String user;
 
+    EditText regemail;
+    EditText regfullname;
+    EditText regphone;
+    EditText reguser;
+    EditText regpass;
+    EditText regpassagain;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +42,14 @@ public class MyActivity extends Activity {
 
         loginpass = (EditText) findViewById(R.id.login_pass);
         loginuser = (EditText) findViewById(R.id.login_login);
+
+        regemail= (EditText) findViewById(R.id.reg_email);
+        regfullname= (EditText) findViewById(R.id.reg_fullname);
+        regphone= (EditText) findViewById(R.id.reg_phone);
+        reguser= (EditText) findViewById(R.id.reg_user);
+        regpass= (EditText) findViewById(R.id.reg_pass);
+        regpassagain= (EditText) findViewById(R.id.reg_passagain);
+
 
         if (user != null) {
             Intent intent = new Intent(this, Kategoriak.class);
@@ -79,7 +95,24 @@ public class MyActivity extends Activity {
         btnregister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if (regemail.getText().toString().matches("")
+                        || regfullname.getText().toString().matches("")
+                        || regpass.getText().toString().matches("")
+                        || regpassagain.getText().toString().matches("")
+                        || regphone.getText().toString().matches("")
+                        || reguser.getText().toString().matches("")
+                        )//nem üres egyik mező sem
+                {
+                    Toast.makeText(getApplicationContext(), "Minden mező kitöltése kötelező!", Toast.LENGTH_SHORT).show();
+                }
+                if (Patterns.EMAIL_ADDRESS.matcher(regemail.getText().toString()).matches())//Email check
+                {
+                    Toast.makeText(getApplicationContext(), "Hibás email cím!", Toast.LENGTH_SHORT).show();
+                }
+                if (Patterns.PHONE.matcher(regphone.getText().toString()).matches())//Phone check
+                {
+                    Toast.makeText(getApplicationContext(), "Hibás telefonszám!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

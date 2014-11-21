@@ -149,44 +149,6 @@ public class Kosar extends Activity {
             }
         });
 
-//        LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,1.0f);
-//        tr.setLayoutParams(lp);
-//
-//        TextView tvLeft = new TextView(this);
-//        tvLeft.setLayoutParams(lp);
-//        tvLeft.setBackgroundColor(Color.WHITE);
-//        tvLeft.setText(index);
-//        tvLeft.setGravity(Gravity.CENTER);
-//
-//        TextView tvCenter = new TextView(this);
-//        tvCenter.setLayoutParams(lp);
-//        tvCenter.setBackgroundColor(Color.WHITE);
-//        tvCenter.setText(name);
-//        tvCenter.setGravity(Gravity.CENTER);
-//
-//        TextView tvRight = new TextView(this);
-//        tvRight.setLayoutParams(lp);
-//        tvRight.setBackgroundColor(Color.WHITE);
-//        tvRight.setText(count);
-//        tvRight.setGravity(Gravity.CENTER);
-//
-//        TextView tvRight2 = new TextView(this);
-//        tvRight2.setLayoutParams(lp);
-//        tvRight2.setBackgroundColor(Color.WHITE);
-//        tvRight2.setText(sum);
-//        tvRight2.setGravity(Gravity.CENTER);
-//
-//        tr.addView(tvLeft);
-//        tr.addView(tvCenter);
-//        tr.addView(tvRight);
-//        tr.addView(tvRight2);
-//        runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                tl.addView(tr, new TableLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-//            }
-//        });
-
     }
 
     static class ViewHolder_main {

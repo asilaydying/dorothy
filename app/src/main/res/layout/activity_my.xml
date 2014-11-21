@@ -57,8 +57,30 @@
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
                 android:ems="10"
-                android:id="@+id/editText3"
+                android:id="@+id/reg_email"
                 />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Teljes név"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:id="@+id/reg_fullname" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Telefonszám"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="phone"
+                android:id="@+id/reg_phone" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -68,7 +90,7 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/editText4" />
+                android:id="@+id/reg_user" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -80,7 +102,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
                 android:ems="10"
-                android:id="@+id/editText5" />
+                android:id="@+id/reg_pass" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -93,7 +115,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
                 android:ems="10"
-                android:id="@+id/editText6" />
+                android:id="@+id/reg_passagain" />
 
             <Button
                 android:layout_width="match_parent"
