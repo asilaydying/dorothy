@@ -52,7 +52,8 @@ public class GlobalHelper {
                 }
             } else//nem létezik a fájl
             {
-                return DownloadImage(id, path, context);
+                DownloadImage(id, path, context);
+                return CheckFile(id,size,path,context);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -77,8 +78,9 @@ public class GlobalHelper {
                 fos.write(buffer, 0, len);
             fos.close();
             is.close();
-
-            bmp = BitmapFactory.decodeByteArray(buffer, 0, buffer.length);
+            BitmapFactory.Options option = new BitmapFactory.Options();
+            option.inJustDecodeBounds = false;
+            bmp = BitmapFactory.decodeByteArray(buffer, 0, buffer.length,option);
             return bmp;
 
         } catch (IOException e) {

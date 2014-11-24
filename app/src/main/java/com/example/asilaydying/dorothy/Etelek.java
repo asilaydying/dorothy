@@ -97,7 +97,10 @@ public class Etelek extends Activity {
                         String path = GlobalHelper.Website + object.getString("Link");
 
                         Bitmap bmp = GlobalHelper.CheckFile(object.getString("ID"), object.getString("PictureFileSize"), path, getApplicationContext());
+                        if (bmp == null)
+                        {
 
+                        }
 //                        Bitmap bmp = null;
 //                        try {
 //                            bmp = BitmapFactory.decodeStream(new URL(path).openConnection().getInputStream());

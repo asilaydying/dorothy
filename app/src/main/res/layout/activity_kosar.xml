@@ -28,7 +28,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
                 android:textColor="#fff"
-                android:text="@string/hello_world" />
+                android:text="" />
 
             <TableLayout
                 android:id="@+id/tableLayout"
