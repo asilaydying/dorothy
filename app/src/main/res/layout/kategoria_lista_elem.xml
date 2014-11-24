@@ -18,6 +18,7 @@
         android:layout_height="wrap_content"
         android:textStyle="bold"
         android:textSize="22sp"
+        android:textColor="#fff"
         android:layout_toRightOf="@id/kepKat"
         android:layout_centerVertical="true"
         />

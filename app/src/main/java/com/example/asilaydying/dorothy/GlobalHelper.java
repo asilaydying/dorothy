@@ -2,6 +2,8 @@ package com.example.asilaydying.dorothy;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
@@ -22,6 +24,7 @@ import java.security.NoSuchAlgorithmException;
 public class GlobalHelper {
     public static String KategoriaKepLink = "http://dorothy.hu/img/Kategoriak/";
     public static String Website = "http://dorothy.hu/";
+    public static String BaseAndroidURL = "http://dorothy.hu/Android/";
     public static String PrefFileUserData = "username";
 
     public static Bitmap CheckFile(String id, String size, String path, Context context) {
@@ -110,5 +113,28 @@ public class GlobalHelper {
             e.printStackTrace();
         }
         return "";
+    }
+
+    public static String getCurrentUser() {
+        return CurrentUser;
+    }
+
+    private static  String CurrentUser;
+
+    public static void CheckLogin(Context ctx)
+    {
+        SharedPreferences settings = ctx.getSharedPreferences(GlobalHelper.PrefFileUserData, 0);
+        CurrentUser = settings.getString("username", null);
+    }
+    public static void LogOut(Context ctx)
+    {
+        SharedPreferences settings = ctx.getSharedPreferences(GlobalHelper.PrefFileUserData, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.remove("username");
+        editor.commit();
+
+        Intent intent = new Intent(ctx,MyActivity.class);
+        ctx.startActivity(intent);
+
     }
 }

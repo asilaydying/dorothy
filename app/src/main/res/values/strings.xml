@@ -10,8 +10,8 @@
     <string name="title_activity_etelek">Ételek</string>
     <string name="title_activity_etelek_reszlet">EtelekReszlet</string>
     <string name="reszletek">Részletek</string>
-    <string name="kosarba">Kosarba</string>
-    <string name="title_activity_kosar">Kosar</string>
+    <string name="kosarba">Kosárba</string>
+    <string name="title_activity_kosar">Kosár</string>
     <string name="felhasznalonev">Felhasználónév</string>
     <string name="jelszo">Jelszó</string>
     <string name="buttonbejelentkezes">Bejelentkezés</string>

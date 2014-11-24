@@ -60,13 +60,23 @@ public class Kosar extends Activity {
                         addRow(object.getString("Index"), object.getString("ProductName"), object.getString("ProductCnt"), object.getString("ProductAmountSum"), Boolean.parseBoolean(object.getString("IsAdditionalFood")));
 
                     }
-
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            txt.setText(TotalAmount);
-                        }
-                    });
+                    if (array.length()>0) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                txt.setText(TotalAmount);
+                                cimvalaszt.setEnabled(true);
+                            }
+                        });
+                    }else{
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                txt.setText("Nincs termék a kosárban!");
+                                cimvalaszt.setEnabled(false);
+                            }
+                        });
+                    }
 
                 } catch (JSONException e) {
                     e.printStackTrace();

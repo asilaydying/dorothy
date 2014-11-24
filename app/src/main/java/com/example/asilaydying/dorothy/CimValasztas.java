@@ -3,6 +3,8 @@ package com.example.asilaydying.dorothy;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,12 +13,14 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -35,6 +39,7 @@ public class CimValasztas extends Activity {
     EditText kapucsengo;
     EditText megjegyzes;
     Spinner kerulet;
+    ProgressBar preLoader;
     List<String> keruletlista = Arrays.asList("I. kerület", "II. kerület", "XII. kerület");
 
     @Override
@@ -47,12 +52,14 @@ public class CimValasztas extends Activity {
 
         cimekgroup = (RadioGroup) findViewById(R.id.cimekgroup);
         btnmegerosit = (Button) findViewById(R.id.buttonmegerosit);
+        preLoader = (ProgressBar) findViewById(R.id.preLoader);
+        preLoader.setVisibility(View.VISIBLE);
 
         utca = (EditText) findViewById(R.id.txtutca);
-        hazszam = (EditText) findViewById(R.id.txtutca);
-        emelet = (EditText) findViewById(R.id.txtutca);
-        kapucsengo = (EditText) findViewById(R.id.txtutca);
-        megjegyzes = (EditText) findViewById(R.id.txtutca);
+        hazszam = (EditText) findViewById(R.id.txthazszam);
+        emelet = (EditText) findViewById(R.id.txtemelet);
+        kapucsengo = (EditText) findViewById(R.id.txtkapucsengo);
+        megjegyzes = (EditText) findViewById(R.id.txtmegjegyzes);
         kerulet = (Spinner) findViewById(R.id.kerulet);
 
         String link = "http://dorothy.hu/Android/GetAddresses?username=" + user;
@@ -64,7 +71,7 @@ public class CimValasztas extends Activity {
 
         kerulet.setAdapter(adapter);
 
-        MyDownloadManager manager = new MyDownloadManager(link);
+        final MyDownloadManager manager = new MyDownloadManager(link);
 
         manager.setOnDownloadListener(new MyDownloadManager.OnDownloadListener() {
             @Override
@@ -86,6 +93,7 @@ public class CimValasztas extends Activity {
                     radio.setId(-1);
                     radio.setTag(-1);
                     radio.setText("Új cím");
+                    radio.setTextColor(Color.WHITE);
 
                     runOnUiThread(new Runnable() {
                         @Override
@@ -99,6 +107,12 @@ public class CimValasztas extends Activity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        preLoader.setVisibility(View.GONE);
+                    }
+                });
             }
         });
         manager.start();
@@ -108,24 +122,86 @@ public class CimValasztas extends Activity {
             @Override
             public void onClick(View v) {
                 int radioButtonID = cimekgroup.getCheckedRadioButtonId();
-                RadioButton radioButton = (RadioButton) cimekgroup.findViewById(radioButtonID);
-                int id = (Integer)radioButton.getTag();
+                final RadioButton radioButton = (RadioButton) cimekgroup.findViewById(radioButtonID);
+                final int id = (Integer) radioButton.getTag();
                 if (id == -1)//új cím
                 {
                     if (utca.getText().toString().matches("") || hazszam.getText().toString().matches("")) {
                         Toast.makeText(getApplicationContext(), "Az utca és a házszám kitöltése kötelező!", Toast.LENGTH_LONG).show();
                         return;
                     } else {//új cím felvétele
+                        String link = GlobalHelper.BaseAndroidURL + "CimMentes?Username=" + user;
+                        link += "&Kerulet=" + Uri.encode(kerulet.getItemAtPosition(kerulet.getSelectedItemPosition()).toString());
+                        link += "&Utca=" + Uri.encode(utca.getText().toString());
+                        link += "&Hazszam=" + Uri.encode(hazszam.getText().toString());
+                        link += "&EmeletAjto=" + Uri.encode(emelet.getText().toString());
+                        link += "&Kapucsengo=" + Uri.encode(kapucsengo.getText().toString());
+                        link += "&Megjegyzes=" + Uri.encode(megjegyzes.getText().toString());
 
+                        MyDownloadManager cimManager = new MyDownloadManager(link);
+                        cimManager.setOnDownloadListener(new MyDownloadManager.OnDownloadListener() {
+                            @Override
+                            public void onDownloadSuccess(final String message) {
+                                if (message.equals("HIBA")) {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(getApplicationContext(), "Nem sikerült felvenni az új cimet!", Toast.LENGTH_LONG).show();
+                                        }
+                                    });
+                                } else {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            try {
+                                                JSONObject object = new JSONObject(message);
+
+                                                Intent intent = new Intent(CimValasztas.this, Megerosites.class);
+
+                                                intent.putExtra("cim", object.getString("CimString"));
+                                                intent.putExtra("cimid", object.getInt("CimId"));
+
+                                                startActivity(intent);
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                        cimManager.start();
                     }
-                }
-                else {
+                } else {
                     Intent intent = new Intent(CimValasztas.this, Megerosites.class);
 
                     intent.putExtra("cim", radioButton.getText().toString());
                     intent.putExtra("cimid", id);
 
                     startActivity(intent);
+                }
+            }
+        });
+        cimekgroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                final RadioButton radioButton = (RadioButton) cimekgroup.findViewById(checkedId);
+                final int id = (Integer) radioButton.getTag();
+
+                if (id == -1) {
+                    kerulet.setVisibility(View.VISIBLE);
+                    utca.setVisibility(View.VISIBLE);
+                    hazszam.setVisibility(View.VISIBLE);
+                    emelet.setVisibility(View.VISIBLE);
+                    kapucsengo.setVisibility(View.VISIBLE);
+                    megjegyzes.setVisibility(View.VISIBLE);
+                } else {
+                    kerulet.setVisibility(View.GONE);
+                    utca.setVisibility(View.GONE);
+                    hazszam.setVisibility(View.GONE);
+                    emelet.setVisibility(View.GONE);
+                    kapucsengo.setVisibility(View.GONE);
+                    megjegyzes.setVisibility(View.GONE);
                 }
             }
         });
@@ -157,6 +233,7 @@ public class CimValasztas extends Activity {
         radio.setId(cimid);
         radio.setTag(cimid);
         radio.setText(cim);
+        radio.setTextColor(Color.WHITE);
 
 
         runOnUiThread(new Runnable() {

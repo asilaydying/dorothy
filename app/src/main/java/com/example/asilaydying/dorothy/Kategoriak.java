@@ -45,6 +45,7 @@ public class Kategoriak extends Activity {
     String KategoriakLink;
     String user;
 
+
     MenuItem item;
 
     @Override

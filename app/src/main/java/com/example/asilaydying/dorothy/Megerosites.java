@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,11 +16,13 @@ import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URI;
 import java.util.UUID;
 
 
@@ -51,10 +54,10 @@ public class Megerosites extends Activity {
         }
 
         txtcim = (TextView) findViewById(R.id.megerosites_txtcim);
-        savebutton= (Button) findViewById(R.id.megerosites_savebutton);
-        tl= (TableLayout) findViewById(R.id.megerosites_tableLayout);
+        savebutton = (Button) findViewById(R.id.megerosites_savebutton);
+        tl = (TableLayout) findViewById(R.id.megerosites_tableLayout);
         sum = (TextView) findViewById(R.id.megerosites_sum);
-        megjegyzes= (EditText) findViewById(R.id.megerosites_megjegyzes);
+        megjegyzes = (EditText) findViewById(R.id.megerosites_megjegyzes);
 
         txtcim.setText(cim);
 
@@ -96,17 +99,32 @@ public class Megerosites extends Activity {
         savebutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String link="";
+                String link = "http://dorothy.hu/Android/befejez?UserName=" + user + "&addressid=" + cimid + "&Megjegyzes=" + Uri.encode(String.valueOf(megjegyzes.getText()));
 
-                MyDownloadManager downloadManager = new MyDownloadManager(link);
+                final MyDownloadManager downloadManager = new MyDownloadManager(link);
                 downloadManager.setOnDownloadListener(new MyDownloadManager.OnDownloadListener() {
                     @Override
                     public void onDownloadSuccess(String message) {
+                        if (message.equals("OK")) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getApplicationContext(), "Sikeres rendelés leadás!", Toast.LENGTH_LONG).show();
+                                }
+                            });
 
+                        } else {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getApplicationContext(), "Nem sikerült a rendelés leadása!", Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        }
                     }
                 });
 
-               downloadManager.start();
+                downloadManager.start();
 
             }
         });
@@ -132,6 +150,7 @@ public class Megerosites extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
+
     private void addRow(String index, String name, String count, String sum, boolean isAdditional) {
         final TableRow tr = new TableRow(this);
         TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1.0f);

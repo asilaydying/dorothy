@@ -45,6 +45,8 @@ public class Etelek extends Activity {
     String EtelekLink;
     MenuItem item;
 
+    ProgressBar preLoader;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +63,8 @@ public class Etelek extends Activity {
 
         adapter = new EtelekListaAdapter(Etelek.this);
         listView = (ListView) findViewById(R.id.listEtelek);
+        preLoader= (ProgressBar) findViewById(R.id.preLoader);
+        preLoader.setVisibility(View.VISIBLE);
 
         MyDownloadManager manager = new MyDownloadManager(EtelekLink);
 
@@ -114,6 +118,7 @@ public class Etelek extends Activity {
                     @Override
                     public void run() {
                         listView.setAdapter(adapter);
+                        preLoader.setVisibility(View.GONE);
                     }
                 });
 

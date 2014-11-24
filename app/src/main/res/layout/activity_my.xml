@@ -7,6 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@drawable/background"
     tools:context=".MyActivity">
 
     <ScrollView
@@ -21,6 +22,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="#fff"
                 android:text="@string/felhasznalonev" />
 
             <EditText
@@ -31,6 +33,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="#fff"
                 android:text="@string/jelszo"/>
 
 
@@ -45,11 +48,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/buttonbejelentkezes"
+                style="@style/ButtonStyle"
                 android:id="@+id/button_login" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="#fff"
                 android:text="@string/email"/>
 
             <EditText
@@ -63,6 +68,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="#fff"
                 android:text="Teljes név"/>
 
             <EditText
@@ -74,6 +80,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="#fff"
                 android:text="Telefonszám"/>
 
             <EditText
@@ -85,6 +92,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="#fff"
                 android:text="@string/felhasznalonev"/>
 
             <EditText
@@ -95,6 +103,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="#fff"
                 android:text="@string/jelszo"/>
 
             <EditText
@@ -107,6 +116,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="#fff"
                 android:id="@+id/textView"
                 android:text="@string/jelszoujra"/>
 
@@ -121,6 +131,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/buttonregisztracio"
+                style="@style/ButtonStyle"
                 android:id="@+id/button_reg" />
 
         </LinearLayout>

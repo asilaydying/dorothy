@@ -6,6 +6,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@drawable/background"
     tools:context="com.example.asilaydying.dorothy.CimValasztas">
 
     <ScrollView
@@ -21,6 +22,7 @@
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="#fff"
                 android:text="Kérem válasszon címet!" />
 
             <RadioGroup
@@ -76,8 +78,13 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/cimekgroup"
+                style="@style/ButtonStyle"
                 android:text="Tovább a megerősítéshez!" />
         </LinearLayout>
     </ScrollView>
+    <ProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/preLoader"/>
 
 </RelativeLayout>
