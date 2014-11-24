@@ -65,7 +65,7 @@ public class CimValasztas extends Activity {
         String link = "http://dorothy.hu/Android/GetAddresses?username=" + user;
 
         ArrayAdapter<String> adapter;
-        adapter = new ArrayAdapter<String>(CimValasztas.this, android.R.layout.simple_spinner_dropdown_item, keruletlista);
+        adapter = new ArrayAdapter<String>(CimValasztas.this, R.layout.spinner_item/*android.R.layout.simple_spinner_dropdown_item*/, keruletlista);
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 

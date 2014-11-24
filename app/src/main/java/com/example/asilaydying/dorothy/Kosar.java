@@ -13,6 +13,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.TableRow.LayoutParams;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -57,7 +58,7 @@ public class Kosar extends Activity {
                     for (int i = 0; i < array.length(); i++) {
                         JSONObject object = array.getJSONObject(i);
 
-                        addRow(object.getString("Index"), object.getString("ProductName"), object.getString("ProductCnt"), object.getString("ProductAmountSum"), Boolean.parseBoolean(object.getString("IsAdditionalFood")));
+                        addRow(object.getString("productId"), object.getString("Index"), object.getString("ProductName"), object.getString("ProductCnt"), object.getString("ProductAmountSum"), Boolean.parseBoolean(object.getString("IsAdditionalFood")));
 
                     }
                     if (array.length()>0) {
@@ -117,7 +118,7 @@ public class Kosar extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void addRow(String index, String name, String count, String sum, boolean isAdditional) {
+    private void addRow(String id, String index, String name, String count, String sum, boolean isAdditional) {
         final TableRow tr = new TableRow(this);
         LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1.0f);
         tr.setLayoutParams(lp);
@@ -132,11 +133,20 @@ public class Kosar extends Activity {
             holder.tvname = (TextView) view.findViewById(R.id.kosar_name);
             holder.tvcounter = (TextView) view.findViewById(R.id.kosar_count);
             holder.tvsum = (TextView) view.findViewById(R.id.kosar_sum);
+            holder.btnmodosit= (Button) view.findViewById(R.id.kosar_mod_button);
 
             holder.tvindex.setText(index);
             holder.tvname.setText(name);
             holder.tvcounter.setText(count);
             holder.tvsum.setText(sum);
+            holder.btnmodosit.setTag(id);
+
+            holder.btnmodosit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(getApplicationContext(),String.valueOf(v.getTag()),Toast.LENGTH_LONG).show();
+                }
+            });
         } else {
             view = LayoutInflater.from(this).inflate(R.layout.kosar_item_sub, null);
 
@@ -165,6 +175,7 @@ public class Kosar extends Activity {
         TextView tvindex;
         TextView tvname;
         TextView tvcounter;
+        Button btnmodosit;
         TextView tvsum;
     }
 
