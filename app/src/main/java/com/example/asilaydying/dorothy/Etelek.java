@@ -141,8 +141,8 @@ public class Etelek extends Activity {
                     intent.putExtra("etelfilesize", etelItem.getFilesize());
                     intent.putExtra("etelNev", etelItem.getName());
                     intent.putExtra("etelLeiras", etelItem.getDesc());
-                    intent.putExtra("etelAr", etelItem.getPrice());
-                    intent.putExtra("etelID", etelItem.getId());
+                    intent.putExtra("etelAr", Integer.parseInt(etelItem.getPrice()));
+                    intent.putExtra("etelID", etelItem.getId().toString());
                     intent.putExtra("eteladdID", etelItem.getAdditionalKaja());
                     intent.putExtra("needaddID", etelItem.isNeedAdditional());
 

@@ -43,6 +43,24 @@ public class Kosar extends Activity {
 
         txt = (TextView) findViewById(R.id.Kosarszumma);
 
+
+
+
+
+        cimvalaszt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Kosar.this, CimValasztas.class);
+                startActivity(intent);
+            }
+        });
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        tl.removeAllViews();
         String link = "http://dorothy.hu/Android/KosarLekerdez?UserName=" + user;
 
         final MyDownloadManager manager = new MyDownloadManager(link);
@@ -58,7 +76,20 @@ public class Kosar extends Activity {
                     for (int i = 0; i < array.length(); i++) {
                         JSONObject object = array.getJSONObject(i);
 
-                        addRow(object.getString("productId"), object.getString("Index"), object.getString("ProductName"), object.getString("ProductCnt"), object.getString("ProductAmountSum"), Boolean.parseBoolean(object.getString("IsAdditionalFood")));
+                        KosarItem item = new KosarItem();
+                        item.setProductId(object.getString("productId"));
+                        item.setIndex(object.getString("Index"));
+                        item.setProductName(object.getString("ProductName"));
+                        item.setProductCnt(object.getString("ProductCnt"));
+                        item.setIsAdditionalFood(object.getString("IsAdditionalFood"));
+                        item.setProductAmountSum(object.getString("ProductAmountSum"));
+                        item.setAdditionalCategory(object.getString("AdditionalCategoryId"));
+                        item.setPictureLink(object.getString("PictureLink"));
+                        item.setFileSize(object.getString("FileSize"));
+                        item.setProductDetail(object.getString("Leiras"));
+
+
+                        addRow(item);
 
                     }
                     if (array.length()>0) {
@@ -87,17 +118,7 @@ public class Kosar extends Activity {
             }
         });
         manager.start();
-
-        cimvalaszt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Kosar.this, CimValasztas.class);
-                startActivity(intent);
-            }
-        });
-
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -118,13 +139,13 @@ public class Kosar extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void addRow(String id, String index, String name, String count, String sum, boolean isAdditional) {
+    private void addRow(KosarItem item) {
         final TableRow tr = new TableRow(this);
         LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1.0f);
         tr.setLayoutParams(lp);
 
         View view;
-        if (!isAdditional) {
+        if (!Boolean.parseBoolean(item.getIsAdditionalFood())) {
             view = LayoutInflater.from(this).inflate(R.layout.kosar_item_main, null);
 
             ViewHolder_main holder = new ViewHolder_main();
@@ -135,16 +156,28 @@ public class Kosar extends Activity {
             holder.tvsum = (TextView) view.findViewById(R.id.kosar_sum);
             holder.btnmodosit= (Button) view.findViewById(R.id.kosar_mod_button);
 
-            holder.tvindex.setText(index);
-            holder.tvname.setText(name);
-            holder.tvcounter.setText(count);
-            holder.tvsum.setText(sum);
-            holder.btnmodosit.setTag(id);
+            holder.tvindex.setText(item.getIndex());
+            holder.tvname.setText(item.getProductName());
+            holder.tvcounter.setText(item.getProductCnt());
+            holder.tvsum.setText(item.getProductAmountSum());
+            holder.btnmodosit.setTag(item);
 
             holder.btnmodosit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(getApplicationContext(),String.valueOf(v.getTag()),Toast.LENGTH_LONG).show();
+                    Intent intent= new Intent(Kosar.this, EtelekReszlet.class);
+                    KosarItem item = (KosarItem) v.getTag();
+                    intent.putExtra("etelID",item.getProductId());
+                    intent.putExtra("eteladdID",item.getAdditionalCategory());
+                    intent.putExtra("needaddID",Boolean.parseBoolean(item.getIsAdditionalFood()));
+
+                    intent.putExtra("etelNev",item.getProductName());
+                    intent.putExtra("etelAr",(Integer)(Integer.parseInt(item.getProductAmountSum())/Integer.parseInt(item.getProductCnt())));
+                    intent.putExtra("etelLeiras",item.getProductDetail());
+                    intent.putExtra("etelfilesize",item.getFileSize());
+                    intent.putExtra("etelLink",GlobalHelper.Website+item.getPictureLink().substring(1));
+
+                    startActivity(intent);
                 }
             });
         } else {
@@ -156,9 +189,9 @@ public class Kosar extends Activity {
             holder.tvcounter = (TextView) view.findViewById(R.id.kosar_count);
             holder.tvsum = (TextView) view.findViewById(R.id.kosar_sum);
 
-            holder.tvname.setText(name);
-            holder.tvcounter.setText(count);
-            holder.tvsum.setText(sum);
+            holder.tvname.setText(item.getProductName());
+            holder.tvcounter.setText(item.getProductCnt());
+            holder.tvsum.setText(item.getProductAmountSum());
         }
 
         tr.addView(view);
