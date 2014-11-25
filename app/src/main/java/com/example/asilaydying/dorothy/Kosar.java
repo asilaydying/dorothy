@@ -82,6 +82,7 @@ public class Kosar extends Activity {
                         item.setProductName(object.getString("ProductName"));
                         item.setProductCnt(object.getString("ProductCnt"));
                         item.setIsAdditionalFood(object.getString("IsAdditionalFood"));
+                        item.setNeedAdditional(object.getString("NeedAdditional"));
                         item.setProductAmountSum(object.getString("ProductAmountSum"));
                         item.setAdditionalCategory(object.getString("AdditionalCategoryId"));
                         item.setPictureLink(object.getString("PictureLink"));
@@ -169,7 +170,7 @@ public class Kosar extends Activity {
                     KosarItem item = (KosarItem) v.getTag();
                     intent.putExtra("etelID",item.getProductId());
                     intent.putExtra("eteladdID",item.getAdditionalCategory());
-                    intent.putExtra("needaddID",Boolean.parseBoolean(item.getIsAdditionalFood()));
+                    intent.putExtra("needaddID",Boolean.parseBoolean(item.getNeedAdditional()));
 
                     intent.putExtra("etelNev",item.getProductName());
                     intent.putExtra("etelAr",(Integer)(Integer.parseInt(item.getProductAmountSum())/Integer.parseInt(item.getProductCnt())));

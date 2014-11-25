@@ -189,15 +189,17 @@ public class EtelekReszlet extends Activity {
             @Override
             public void onClick(View v) {
                 int darab = Integer.parseInt(String.valueOf(count.getText()));
-                count.setText(String.valueOf(--darab));
-                if (NeedAdditional) {
-                    etelekreszleteklista.remove(etelekreszleteklista.size() - 1);
-                    listView.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            listView.setAdapter(adapter);
-                        }
-                    });
+                if (darab>0) {
+                    count.setText(String.valueOf(--darab));
+                    if (NeedAdditional) {
+                        etelekreszleteklista.remove(etelekreszleteklista.size() - 1);
+                        listView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                listView.setAdapter(adapter);
+                            }
+                        });
+                    }
                 }
             }
         });
@@ -217,13 +219,13 @@ public class EtelekReszlet extends Activity {
 
                     etelekreszleteklista.clear();
 
+
                     for (int i = 0; i < array.length(); i++) {
                         final JSONObject obj = array.getJSONObject(i);
 
                         if (obj.getBoolean("IsAdditionalFood"))
                         {
                             EtelekReszletItem item = new EtelekReszletItem(obj.getString("ProductName"),obj.getString("productId"));
-
                             etelekreszleteklista.add(item);
                         }
                         else {
@@ -231,7 +233,8 @@ public class EtelekReszlet extends Activity {
                                 @Override
                                 public void run() {
                                     try {
-                                        count.setText(obj.getString("ProductCnt"));
+                                        int productcount =Integer.parseInt(obj.getString("ProductCnt"));
+                                        count.setText(String.valueOf(productcount));
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
@@ -239,6 +242,20 @@ public class EtelekReszlet extends Activity {
                             });
                         }
                     }
+
+                    if (array.length()>0&&NeedAdditional)
+                    {
+                        JSONObject obj = array.getJSONObject(0);
+                        int productcount =Integer.parseInt(obj.getString("ProductCnt"));
+                        int emptyfields=productcount-array.length()+1;
+                        for (int i = 0; i < emptyfields; i++) {
+                            etelekreszleteklista.add(new EtelekReszletItem(addlista.get(0), addlistakey.get(0)));
+                        }
+                    }
+                    else if (NeedAdditional){
+                        etelekreszleteklista.add(new EtelekReszletItem(addlista.get(0), addlistakey.get(0)));
+                    }
+
                     listView.post(new Runnable() {
                         @Override
                         public void run() {
