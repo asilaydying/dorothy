@@ -48,7 +48,8 @@ public class GlobalHelper {
                     fis.close();
                     return bitmap;
                 } else {
-                    return DownloadImage(id, path, context);
+                    DownloadImage(id, path, context);
+                    return CheckFile(id,size,path,context);
                 }
             } else//nem létezik a fájl
             {

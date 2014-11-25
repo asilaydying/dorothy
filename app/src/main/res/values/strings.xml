@@ -21,5 +21,6 @@
     <string name="title_activity_cim_valasztas">CimValasztas</string>
     <string name="btncimvalasztas">Tovább a címválasztáshoz</string>
     <string name="title_activity_megerosites">Megerosites</string>
+    <string name="modositas">Módosítás</string>
 
 </resources>

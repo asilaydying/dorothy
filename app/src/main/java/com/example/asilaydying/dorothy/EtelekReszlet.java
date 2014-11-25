@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class EtelekReszlet extends Activity {
     EditText count;
     ImageView imageView;
     TextView ar, leiras, nev;
-    UUID ID;
+    String ID;
     String additionalID;
     Boolean NeedAdditional;
     ListView listView;
@@ -52,38 +53,10 @@ public class EtelekReszlet extends Activity {
         SharedPreferences settings = getSharedPreferences(GlobalHelper.PrefFileUserData, 0);
         user = settings.getString("username", null);
 
-        Intent currentintent = getIntent();
-        Bundle bundle = currentintent.getExtras();
-
-        if (bundle != null) {
-            String etelnev = (String) bundle.get("etelNev");
-            String etelAr = (String) bundle.get("etelAr");
-            String etelLeiras = (String) bundle.get("etelLeiras");
-            //Bitmap bmp = (Bitmap) bundle.get("etelKep");
-            ID = (UUID) bundle.get("etelID");
-            additionalID = (String) bundle.get("eteladdID");
-            NeedAdditional = (Boolean) bundle.get("needaddID");
-
-            Bitmap bmp = GlobalHelper.CheckFile(ID.toString(), (String) bundle.get("etelfilesize"), (String) bundle.get("etelLink"), getApplicationContext());
-
-            imageView = (ImageView) findViewById(R.id.EtelReszletKep);
-            ar = (TextView) findViewById(R.id.EtelReszletesAr);
-            leiras = (TextView) findViewById(R.id.EtelReszletLeiras);
-            nev = (TextView) findViewById(R.id.EtelReszletNev);
-
-
-            imageView.setImageBitmap(bmp);
-            ar.setText(etelAr);
-            leiras.setText(etelLeiras);
-            nev.setText(etelnev);
-
-        }
-
-
-        MyDownloadManager manager = new MyDownloadManager("http://dorothy.hu/Android/GetEtelekByKategoriaJson/" + additionalID);
-
-
-        adapter = new EtelekReszletListaAdapter(EtelekReszlet.this);
+        imageView = (ImageView) findViewById(R.id.EtelReszletKep);
+        ar = (TextView) findViewById(R.id.EtelReszletesAr);
+        leiras = (TextView) findViewById(R.id.EtelReszletLeiras);
+        nev = (TextView) findViewById(R.id.EtelReszletNev);
 
         AddButton = (Button) findViewById(R.id.btnAdd);
         pluszButton = (Button) findViewById(R.id.plusz);
@@ -91,7 +64,39 @@ public class EtelekReszlet extends Activity {
         count = (EditText) findViewById(R.id.count);
         listView = (ListView) findViewById(R.id.ListReszlet);
 
-        manager.setOnDownloadListener(new MyDownloadManager.OnDownloadListener() {
+        Intent currentintent = getIntent();
+        Bundle bundle = currentintent.getExtras();
+
+        if (bundle != null) {
+            String etelnev = (String) bundle.get("etelNev");
+            Integer etelAr = (Integer) bundle.get("etelAr");
+            String etelLeiras = (String) bundle.get("etelLeiras");
+            //Bitmap bmp = (Bitmap) bundle.get("etelKep");
+            ID = (String) bundle.get("etelID");
+            additionalID = (String) bundle.get("eteladdID");
+            NeedAdditional = (Boolean) bundle.get("needaddID");
+
+            ar.setText(etelAr.toString());
+            leiras.setText(etelLeiras);
+            nev.setText(etelnev);
+
+        }
+
+
+        Bitmap bmp = GlobalHelper.CheckFile(ID.toString(), (String) bundle.get("etelfilesize"), (String) bundle.get("etelLink"), getApplicationContext());
+        imageView.setImageBitmap(bmp);
+
+
+
+
+        MyDownloadManager additionalManager = new MyDownloadManager("http://dorothy.hu/Android/GetEtelekByKategoriaJson/" + additionalID);
+
+
+        adapter = new EtelekReszletListaAdapter(EtelekReszlet.this);
+
+
+
+        additionalManager.setOnDownloadListener(new MyDownloadManager.OnDownloadListener() {
             @Override
             public void onDownloadSuccess(String message) {
                 try {
@@ -115,22 +120,22 @@ public class EtelekReszlet extends Activity {
                     e.printStackTrace();
                 }
 
-                listView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        listView.setAdapter(adapter);
-                    }
-                });
+//                listView.post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        listView.setAdapter(adapter);
+//                    }
+//                });
             }
         });
-        manager.start();
+        additionalManager.start();
 
         AddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String link = "http://dorothy.hu/Android/KosarbaKorettel?UserName=" + user + "&productid=" + ID.toString();
 
-                link+="&mennyiseg="+etelekreszleteklista.size();
+                link+="&mennyiseg="+ count.getText();
 
                 for(int i = 0; i < etelekreszleteklista.size(); i++)  {
                     link+="&additionalok="+etelekreszleteklista.get(i).getAddID();
@@ -196,8 +201,58 @@ public class EtelekReszlet extends Activity {
                 }
             }
         });
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MyDownloadManager mainManager= new MyDownloadManager(GlobalHelper.BaseAndroidURL+"KosarLekerdez?UserName="+user+"&productid="+ID);
+        mainManager.setOnDownloadListener(new MyDownloadManager.OnDownloadListener() {
+            @Override
+            public void onDownloadSuccess(String message) {
+                try {
+                    JSONObject object= new JSONObject(message);
 
+                    JSONArray array = new JSONArray(object.getString("ProductsViewModel"));
+
+                    etelekreszleteklista.clear();
+
+                    for (int i = 0; i < array.length(); i++) {
+                        final JSONObject obj = array.getJSONObject(i);
+
+                        if (obj.getBoolean("IsAdditionalFood"))
+                        {
+                            EtelekReszletItem item = new EtelekReszletItem(obj.getString("ProductName"),obj.getString("productId"));
+
+                            etelekreszleteklista.add(item);
+                        }
+                        else {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        count.setText(obj.getString("ProductCnt"));
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                        }
+                    }
+                    listView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            listView.setAdapter(adapter);
+                        }
+                    });
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        });
+        mainManager.start();
     }
 
     private void ClearData() {
