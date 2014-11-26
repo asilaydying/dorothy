@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -26,6 +27,7 @@ public class Kosar extends Activity {
     TextView txt;
     String user;
     Button cimvalaszt;
+    ProgressBar preLoader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +39,8 @@ public class Kosar extends Activity {
 
         SharedPreferences settings = getSharedPreferences(GlobalHelper.PrefFileUserData, 0);
         user = settings.getString("username", null);
-
+        preLoader= (ProgressBar) findViewById(R.id.preLoader);
+        preLoader.setVisibility(View.VISIBLE);
         tl = (TableLayout) findViewById(R.id.tableLayout);
         cimvalaszt = (Button) findViewById(R.id.buttoncimvalasztas);
 
@@ -65,6 +68,7 @@ public class Kosar extends Activity {
     protected void onResume() {
         super.onResume();
         tl.removeAllViews();
+        preLoader.setVisibility(View.VISIBLE);
         String link = "http://dorothy.hu/Android/KosarLekerdez?UserName=" + user;
 
         final MyDownloadManager manager = new MyDownloadManager(link);
@@ -103,6 +107,7 @@ public class Kosar extends Activity {
                             public void run() {
                                 txt.setText(TotalAmount);
                                 cimvalaszt.setEnabled(true);
+                                preLoader.setVisibility(View.GONE);
                             }
                         });
                     }else{
@@ -111,6 +116,7 @@ public class Kosar extends Activity {
                             public void run() {
                                 txt.setText("Nincs termék a kosárban!");
                                 cimvalaszt.setEnabled(false);
+                                preLoader.setVisibility(View.GONE);
                             }
                         });
                     }

@@ -1,5 +1,6 @@
 package com.example.asilaydying.dorothy;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
@@ -54,7 +55,7 @@ public class GlobalHelper {
             } else//nem létezik a fájl
             {
                 DownloadImage(id, path, context);
-                return CheckFile(id,size,path,context);
+                return CheckFile(id, size, path, context);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -137,6 +138,15 @@ public class GlobalHelper {
 
         Intent intent = new Intent(ctx,MyActivity.class);
         ctx.startActivity(intent);
-
+        ((Activity) ctx).finish();
+    }
+    public static boolean isValidEmail(String email)
+    {
+        String emailRegex ="^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+        if(email.matches(emailRegex))
+        {
+            return true;
+        }
+        return false;
     }
 }

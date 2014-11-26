@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +37,7 @@ public class EtelekReszlet extends Activity {
     String additionalID;
     Boolean NeedAdditional;
     ListView listView;
+    ProgressBar preLoader;
 
     String user;
     MenuItem item;
@@ -56,7 +58,7 @@ public class EtelekReszlet extends Activity {
 
         SharedPreferences settings = getSharedPreferences(GlobalHelper.PrefFileUserData, 0);
         user = settings.getString("username", null);
-
+        preLoader= (ProgressBar) findViewById(R.id.preLoader);
         imageView = (ImageView) findViewById(R.id.EtelReszletKep);
         ar = (TextView) findViewById(R.id.EtelReszletesAr);
         leiras = (TextView) findViewById(R.id.EtelReszletLeiras);
@@ -212,6 +214,7 @@ public class EtelekReszlet extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        preLoader.setVisibility(View.VISIBLE);
         MyDownloadManager mainManager= new MyDownloadManager(GlobalHelper.BaseAndroidURL+"KosarLekerdez?UserName="+user+"&productid="+ID);
         mainManager.setOnDownloadListener(new MyDownloadManager.OnDownloadListener() {
             @Override
@@ -264,6 +267,7 @@ public class EtelekReszlet extends Activity {
                         @Override
                         public void run() {
                             listView.setAdapter(adapter);
+                            preLoader.setVisibility(View.GONE);
                         }
                     });
                 }
