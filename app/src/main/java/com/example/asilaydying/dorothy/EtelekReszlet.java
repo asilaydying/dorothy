@@ -1,5 +1,6 @@
 package com.example.asilaydying.dorothy;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.DownloadManager;
 import android.content.Intent;
@@ -49,6 +50,9 @@ public class EtelekReszlet extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_etelek_reszlet);
+
+        ActionBar actionBar = getActionBar();
+        actionBar.setHomeButtonEnabled(true);
 
         SharedPreferences settings = getSharedPreferences(GlobalHelper.PrefFileUserData, 0);
         user = settings.getString("username", null);
@@ -311,6 +315,11 @@ public class EtelekReszlet extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+            return true;
+        }
+        if (id==android.R.id.home)
+        {
+            this.finish();
             return true;
         }
         return super.onOptionsItemSelected(item);

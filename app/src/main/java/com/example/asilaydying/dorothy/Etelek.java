@@ -1,5 +1,6 @@
 package com.example.asilaydying.dorothy;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.Intent;
@@ -51,7 +52,8 @@ public class Etelek extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_etelek);
-
+        ActionBar actionBar = getActionBar();
+        actionBar.setHomeButtonEnabled(true);
         //kategoria kivétele
         Intent currentintent = getIntent();
         Bundle bundle = currentintent.getExtras();
@@ -190,6 +192,11 @@ public class Etelek extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+            return true;
+        }
+        if (id==android.R.id.home)
+        {
+            this.finish();
             return true;
         }
         return super.onOptionsItemSelected(item);

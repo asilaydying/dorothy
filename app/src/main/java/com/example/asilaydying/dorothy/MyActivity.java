@@ -56,7 +56,7 @@ public class MyActivity extends Activity {
             //Intent intent = new Intent(this, Etelek.class);
             //intent.putExtra("catID", "1");
             startActivity(intent);
-
+            this.finish();
         } else {
 
         }
