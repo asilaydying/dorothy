@@ -35,7 +35,8 @@
         </activity>
         <activity
             android:name=".EtelekReszlet"
-            android:label="@string/title_activity_etelek_reszlet" >
+            android:label="@string/title_activity_etelek_reszlet"
+            android:windowSoftInputMode="stateHidden">
         </activity>
         <activity
             android:name=".Kosar"
@@ -43,7 +44,8 @@
         </activity>
         <activity
             android:name=".CimValasztas"
-            android:label="@string/title_activity_cim_valasztas" >
+            android:label="@string/title_activity_cim_valasztas"
+            android:windowSoftInputMode="stateHidden">
         </activity>
         <activity
             android:name=".Megerosites"

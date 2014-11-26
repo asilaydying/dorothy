@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -37,6 +38,7 @@ public class Megerosites extends Activity {
     EditText megjegyzes;
     TextView sum;
     String user;
+    ProgressBar preLoader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +58,7 @@ public class Megerosites extends Activity {
             cim = (String) bundle.get("cim");
             cimid = (Integer) bundle.get("cimid");
         }
-
+        preLoader= (ProgressBar) findViewById(R.id.preLoader);
         txtcim = (TextView) findViewById(R.id.megerosites_txtcim);
         savebutton = (Button) findViewById(R.id.megerosites_savebutton);
         tl = (TableLayout) findViewById(R.id.megerosites_tableLayout);
@@ -64,6 +66,8 @@ public class Megerosites extends Activity {
         megjegyzes = (EditText) findViewById(R.id.megerosites_megjegyzes);
 
         txtcim.setText(cim);
+
+        preLoader.setVisibility(View.VISIBLE);
 
         String link = "http://dorothy.hu/Android/KosarLekerdez?UserName=" + user;
 
@@ -88,6 +92,7 @@ public class Megerosites extends Activity {
                         @Override
                         public void run() {
                             sum.setText(TotalAmount);
+                            preLoader.setVisibility(View.GONE);
                         }
                     });
 
@@ -99,6 +104,7 @@ public class Megerosites extends Activity {
             }
         });
         manager.start();
+
 
         savebutton.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -56,9 +57,11 @@ public class EtelekReszlet extends Activity {
         ActionBar actionBar = getActionBar();
         actionBar.setHomeButtonEnabled(true);
 
+
+
         SharedPreferences settings = getSharedPreferences(GlobalHelper.PrefFileUserData, 0);
         user = settings.getString("username", null);
-        preLoader= (ProgressBar) findViewById(R.id.preLoader);
+        preLoader = (ProgressBar) findViewById(R.id.preLoader);
         imageView = (ImageView) findViewById(R.id.EtelReszletKep);
         ar = (TextView) findViewById(R.id.EtelReszletesAr);
         leiras = (TextView) findViewById(R.id.EtelReszletLeiras);
@@ -93,13 +96,10 @@ public class EtelekReszlet extends Activity {
         imageView.setImageBitmap(bmp);
 
 
-
-
         MyDownloadManager additionalManager = new MyDownloadManager("http://dorothy.hu/Android/GetEtelekByKategoriaJson/" + additionalID);
 
 
         adapter = new EtelekReszletListaAdapter(EtelekReszlet.this);
-
 
 
         additionalManager.setOnDownloadListener(new MyDownloadManager.OnDownloadListener() {
@@ -141,10 +141,10 @@ public class EtelekReszlet extends Activity {
             public void onClick(View v) {
                 String link = "http://dorothy.hu/Android/KosarbaKorettel?UserName=" + user + "&productid=" + ID.toString();
 
-                link+="&mennyiseg="+ count.getText();
+                link += "&mennyiseg=" + count.getText();
 
-                for(int i = 0; i < etelekreszleteklista.size(); i++)  {
-                    link+="&additionalok="+etelekreszleteklista.get(i).getAddID();
+                for (int i = 0; i < etelekreszleteklista.size(); i++) {
+                    link += "&additionalok=" + etelekreszleteklista.get(i).getAddID();
                 }
 
                 MyDownloadManager manager = new MyDownloadManager(link);
@@ -195,7 +195,7 @@ public class EtelekReszlet extends Activity {
             @Override
             public void onClick(View v) {
                 int darab = Integer.parseInt(String.valueOf(count.getText()));
-                if (darab>0) {
+                if (darab > 0) {
                     count.setText(String.valueOf(--darab));
                     if (NeedAdditional) {
                         etelekreszleteklista.remove(etelekreszleteklista.size() - 1);
@@ -214,13 +214,18 @@ public class EtelekReszlet extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        InputMethodManager inputManager = (InputMethodManager) getSystemService(this.INPUT_METHOD_SERVICE);
+
+        inputManager.hideSoftInputFromWindow(new View(this).getWindowToken(), 0);
+
         preLoader.setVisibility(View.VISIBLE);
-        MyDownloadManager mainManager= new MyDownloadManager(GlobalHelper.BaseAndroidURL+"KosarLekerdez?UserName="+user+"&productid="+ID);
+        MyDownloadManager mainManager = new MyDownloadManager(GlobalHelper.BaseAndroidURL + "KosarLekerdez?UserName=" + user + "&productid=" + ID);
         mainManager.setOnDownloadListener(new MyDownloadManager.OnDownloadListener() {
             @Override
             public void onDownloadSuccess(String message) {
                 try {
-                    JSONObject object= new JSONObject(message);
+                    JSONObject object = new JSONObject(message);
 
                     JSONArray array = new JSONArray(object.getString("ProductsViewModel"));
 
@@ -230,17 +235,15 @@ public class EtelekReszlet extends Activity {
                     for (int i = 0; i < array.length(); i++) {
                         final JSONObject obj = array.getJSONObject(i);
 
-                        if (obj.getBoolean("IsAdditionalFood"))
-                        {
-                            EtelekReszletItem item = new EtelekReszletItem(obj.getString("ProductName"),obj.getString("productId"));
+                        if (obj.getBoolean("IsAdditionalFood")) {
+                            EtelekReszletItem item = new EtelekReszletItem(obj.getString("ProductName"), obj.getString("productId"));
                             etelekreszleteklista.add(item);
-                        }
-                        else {
+                        } else {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     try {
-                                        int productcount =Integer.parseInt(obj.getString("ProductCnt"));
+                                        int productcount = Integer.parseInt(obj.getString("ProductCnt"));
                                         count.setText(String.valueOf(productcount));
                                     } catch (JSONException e) {
                                         e.printStackTrace();
@@ -250,16 +253,14 @@ public class EtelekReszlet extends Activity {
                         }
                     }
 
-                    if (array.length()>0&&NeedAdditional)
-                    {
+                    if (array.length() > 0 && NeedAdditional) {
                         JSONObject obj = array.getJSONObject(0);
-                        int productcount =Integer.parseInt(obj.getString("ProductCnt"));
-                        int emptyfields=productcount-array.length()+1;
+                        int productcount = Integer.parseInt(obj.getString("ProductCnt"));
+                        int emptyfields = productcount - array.length() + 1;
                         for (int i = 0; i < emptyfields; i++) {
                             etelekreszleteklista.add(new EtelekReszletItem(addlista.get(0), addlistakey.get(0)));
                         }
-                    }
-                    else if (NeedAdditional){
+                    } else if (NeedAdditional) {
                         etelekreszleteklista.add(new EtelekReszletItem(addlista.get(0), addlistakey.get(0)));
                     }
 
@@ -270,9 +271,7 @@ public class EtelekReszlet extends Activity {
                             preLoader.setVisibility(View.GONE);
                         }
                     });
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -321,8 +320,7 @@ public class EtelekReszlet extends Activity {
         if (id == R.id.action_settings) {
             return true;
         }
-        if (id==android.R.id.home)
-        {
+        if (id == android.R.id.home) {
             this.finish();
             return true;
         }
