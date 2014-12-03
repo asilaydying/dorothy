@@ -1,9 +1,11 @@
 package com.example.asilaydying.dorothy;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -36,11 +39,15 @@ public class Megerosites extends Activity {
     EditText megjegyzes;
     TextView sum;
     String user;
+    ProgressBar preLoader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_megerosites);
+
+        ActionBar actionBar = getActionBar();
+        actionBar.setHomeButtonEnabled(true);
 
         SharedPreferences settings = getSharedPreferences(GlobalHelper.PrefFileUserData, 0);
         user = settings.getString("username", null);
@@ -52,7 +59,7 @@ public class Megerosites extends Activity {
             cim = (String) bundle.get("cim");
             cimid = (Integer) bundle.get("cimid");
         }
-
+        preLoader= (ProgressBar) findViewById(R.id.preLoader);
         txtcim = (TextView) findViewById(R.id.megerosites_txtcim);
         savebutton = (Button) findViewById(R.id.megerosites_savebutton);
         tl = (TableLayout) findViewById(R.id.megerosites_tableLayout);
@@ -60,6 +67,8 @@ public class Megerosites extends Activity {
         megjegyzes = (EditText) findViewById(R.id.megerosites_megjegyzes);
 
         txtcim.setText(cim);
+
+        preLoader.setVisibility(View.VISIBLE);
 
         String link = "http://dorothy.hu/Android/KosarLekerdez?UserName=" + user;
 
@@ -84,6 +93,7 @@ public class Megerosites extends Activity {
                         @Override
                         public void run() {
                             sum.setText(TotalAmount);
+                            preLoader.setVisibility(View.GONE);
                         }
                     });
 
@@ -96,9 +106,10 @@ public class Megerosites extends Activity {
         });
         manager.start();
 
+
         savebutton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 String link = "http://dorothy.hu/Android/befejez?UserName=" + user + "&addressid=" + cimid + "&Megjegyzes=" + Uri.encode(String.valueOf(megjegyzes.getText()));
 
                 final MyDownloadManager downloadManager = new MyDownloadManager(link);
@@ -110,6 +121,14 @@ public class Megerosites extends Activity {
                                 @Override
                                 public void run() {
                                     Toast.makeText(getApplicationContext(), "Sikeres rendelés leadás!", Toast.LENGTH_LONG).show();
+                                    GlobalHelper.EnableButton(v);
+                                    preLoader.setVisibility(View.GONE);
+
+                                    Intent intent = new Intent(Megerosites.this, Kategoriak.class);
+
+                                    startActivity(intent);
+
+                                    finish();
                                 }
                             });
 
@@ -117,7 +136,9 @@ public class Megerosites extends Activity {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toast.makeText(getApplicationContext(), "Nem sikerült a rendelés leadása!", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(Megerosites.this, "Nem sikerült a rendelés leadása!", Toast.LENGTH_LONG).show();
+                                    GlobalHelper.EnableButton(v);
+                                    preLoader.setVisibility(View.GONE);
                                 }
                             });
                         }
@@ -125,7 +146,8 @@ public class Megerosites extends Activity {
                 });
 
                 downloadManager.start();
-
+                GlobalHelper.DisableButton(v);
+                preLoader.setVisibility(View.VISIBLE);
             }
         });
 
@@ -146,6 +168,11 @@ public class Megerosites extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+            return true;
+        }
+        if (id==android.R.id.home)
+        {
+            this.finish();
             return true;
         }
         return super.onOptionsItemSelected(item);

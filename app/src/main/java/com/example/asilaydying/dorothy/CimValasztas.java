@@ -1,5 +1,6 @@
 package com.example.asilaydying.dorothy;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,6 +18,7 @@ import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -39,13 +41,17 @@ public class CimValasztas extends Activity {
     EditText kapucsengo;
     EditText megjegyzes;
     Spinner kerulet;
+    TextView txtkerulet;
     ProgressBar preLoader;
-    List<String> keruletlista = Arrays.asList("I. kerület", "II. kerület", "XII. kerület");
+    List<String> keruletlista = Arrays.asList("I.", "II.", "XII.");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cim_valasztas);
+
+        ActionBar actionBar = getActionBar();
+        actionBar.setHomeButtonEnabled(true);
 
         SharedPreferences settings = getSharedPreferences(GlobalHelper.PrefFileUserData, 0);
         user = settings.getString("username", null);
@@ -61,11 +67,12 @@ public class CimValasztas extends Activity {
         kapucsengo = (EditText) findViewById(R.id.txtkapucsengo);
         megjegyzes = (EditText) findViewById(R.id.txtmegjegyzes);
         kerulet = (Spinner) findViewById(R.id.kerulet);
+        txtkerulet = (TextView) findViewById(R.id.txtkerulet);
 
         String link = "http://dorothy.hu/Android/GetAddresses?username=" + user;
 
         ArrayAdapter<String> adapter;
-        adapter = new ArrayAdapter<String>(CimValasztas.this, R.layout.spinner_item/*android.R.layout.simple_spinner_dropdown_item*/, keruletlista);
+        adapter = new ArrayAdapter<String>(CimValasztas.this, android.R.layout.simple_spinner_dropdown_item, keruletlista);
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -100,7 +107,7 @@ public class CimValasztas extends Activity {
                         public void run() {
                             cimekgroup.addView(radio);
                             if (array.length() == 0) {
-                                cimekgroup.check(-1);
+                                cimekgroup.check(radio.getId());
                             }
                         }
                     });
@@ -120,7 +127,7 @@ public class CimValasztas extends Activity {
 
         btnmegerosit.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 int radioButtonID = cimekgroup.getCheckedRadioButtonId();
                 final RadioButton radioButton = (RadioButton) cimekgroup.findViewById(radioButtonID);
                 final int id = (Integer) radioButton.getTag();
@@ -146,7 +153,9 @@ public class CimValasztas extends Activity {
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            Toast.makeText(getApplicationContext(), "Nem sikerült felvenni az új cimet!", Toast.LENGTH_LONG).show();
+                                            Toast.makeText(CimValasztas.this, "Nem sikerült felvenni az új cimet!", Toast.LENGTH_LONG).show();
+                                            GlobalHelper.EnableButton(v);
+                                            preLoader.setVisibility(View.GONE);
                                         }
                                     });
                                 } else {
@@ -162,6 +171,10 @@ public class CimValasztas extends Activity {
                                                 intent.putExtra("cimid", object.getInt("CimId"));
 
                                                 startActivity(intent);
+
+                                                GlobalHelper.EnableButton(v);
+                                                preLoader.setVisibility(View.GONE);
+
                                             } catch (Exception e) {
                                                 e.printStackTrace();
                                             }
@@ -171,6 +184,10 @@ public class CimValasztas extends Activity {
                             }
                         });
                         cimManager.start();
+
+                        GlobalHelper.DisableButton(v);
+                        preLoader.setVisibility(View.VISIBLE);
+
                     }
                 } else {
                     Intent intent = new Intent(CimValasztas.this, Megerosites.class);
@@ -185,23 +202,31 @@ public class CimValasztas extends Activity {
         cimekgroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                final RadioButton radioButton = (RadioButton) cimekgroup.findViewById(checkedId);
-                final int id = (Integer) radioButton.getTag();
+                try {
+                    final RadioButton radioButton = (RadioButton) cimekgroup.findViewById(checkedId);
+                    final int id = (Integer) radioButton.getTag();
 
-                if (id == -1) {
-                    kerulet.setVisibility(View.VISIBLE);
-                    utca.setVisibility(View.VISIBLE);
-                    hazszam.setVisibility(View.VISIBLE);
-                    emelet.setVisibility(View.VISIBLE);
-                    kapucsengo.setVisibility(View.VISIBLE);
-                    megjegyzes.setVisibility(View.VISIBLE);
-                } else {
-                    kerulet.setVisibility(View.GONE);
-                    utca.setVisibility(View.GONE);
-                    hazszam.setVisibility(View.GONE);
-                    emelet.setVisibility(View.GONE);
-                    kapucsengo.setVisibility(View.GONE);
-                    megjegyzes.setVisibility(View.GONE);
+                    if (id == -1) {
+                        kerulet.setVisibility(View.VISIBLE);
+                        utca.setVisibility(View.VISIBLE);
+                        hazszam.setVisibility(View.VISIBLE);
+                        emelet.setVisibility(View.VISIBLE);
+                        kapucsengo.setVisibility(View.VISIBLE);
+                        megjegyzes.setVisibility(View.VISIBLE);
+                        txtkerulet.setVisibility(View.VISIBLE);
+
+                    } else {
+                        kerulet.setVisibility(View.GONE);
+                        utca.setVisibility(View.GONE);
+                        hazszam.setVisibility(View.GONE);
+                        emelet.setVisibility(View.GONE);
+                        kapucsengo.setVisibility(View.GONE);
+                        megjegyzes.setVisibility(View.GONE);
+                        txtkerulet.setVisibility(View.GONE);
+                    }
+                } catch (Exception e)
+                {
+                    e.printStackTrace();
                 }
             }
         });
@@ -223,6 +248,11 @@ public class CimValasztas extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+            return true;
+        }
+        if (id==android.R.id.home)
+        {
+            this.finish();
             return true;
         }
         return super.onOptionsItemSelected(item);

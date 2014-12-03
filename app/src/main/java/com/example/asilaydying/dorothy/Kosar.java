@@ -1,5 +1,6 @@
 package com.example.asilaydying.dorothy;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -25,15 +27,20 @@ public class Kosar extends Activity {
     TextView txt;
     String user;
     Button cimvalaszt;
+    ProgressBar preLoader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_kosar);
 
+        ActionBar actionBar = getActionBar();
+        actionBar.setHomeButtonEnabled(true);
+
         SharedPreferences settings = getSharedPreferences(GlobalHelper.PrefFileUserData, 0);
         user = settings.getString("username", null);
-
+        preLoader= (ProgressBar) findViewById(R.id.preLoader);
+        preLoader.setVisibility(View.VISIBLE);
         tl = (TableLayout) findViewById(R.id.tableLayout);
         cimvalaszt = (Button) findViewById(R.id.buttoncimvalasztas);
 
@@ -61,6 +68,7 @@ public class Kosar extends Activity {
     protected void onResume() {
         super.onResume();
         tl.removeAllViews();
+        preLoader.setVisibility(View.VISIBLE);
         String link = "http://dorothy.hu/Android/KosarLekerdez?UserName=" + user;
 
         final MyDownloadManager manager = new MyDownloadManager(link);
@@ -82,6 +90,7 @@ public class Kosar extends Activity {
                         item.setProductName(object.getString("ProductName"));
                         item.setProductCnt(object.getString("ProductCnt"));
                         item.setIsAdditionalFood(object.getString("IsAdditionalFood"));
+                        item.setNeedAdditional(object.getString("NeedAdditional"));
                         item.setProductAmountSum(object.getString("ProductAmountSum"));
                         item.setAdditionalCategory(object.getString("AdditionalCategoryId"));
                         item.setPictureLink(object.getString("PictureLink"));
@@ -98,6 +107,7 @@ public class Kosar extends Activity {
                             public void run() {
                                 txt.setText(TotalAmount);
                                 cimvalaszt.setEnabled(true);
+                                preLoader.setVisibility(View.GONE);
                             }
                         });
                     }else{
@@ -106,6 +116,7 @@ public class Kosar extends Activity {
                             public void run() {
                                 txt.setText("Nincs termék a kosárban!");
                                 cimvalaszt.setEnabled(false);
+                                preLoader.setVisibility(View.GONE);
                             }
                         });
                     }
@@ -134,6 +145,11 @@ public class Kosar extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+            return true;
+        }
+        if (id==android.R.id.home)
+        {
+            this.finish();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -169,7 +185,7 @@ public class Kosar extends Activity {
                     KosarItem item = (KosarItem) v.getTag();
                     intent.putExtra("etelID",item.getProductId());
                     intent.putExtra("eteladdID",item.getAdditionalCategory());
-                    intent.putExtra("needaddID",Boolean.parseBoolean(item.getIsAdditionalFood()));
+                    intent.putExtra("needaddID",Boolean.parseBoolean(item.getNeedAdditional()));
 
                     intent.putExtra("etelNev",item.getProductName());
                     intent.putExtra("etelAr",(Integer)(Integer.parseInt(item.getProductAmountSum())/Integer.parseInt(item.getProductCnt())));

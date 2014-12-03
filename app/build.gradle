@@ -7,7 +7,7 @@ android {
     defaultConfig {
         applicationId "com.example.asilaydying.dorothy"
         minSdkVersion 15
-        targetSdkVersion 19
+        targetSdkVersion 16
         versionCode 1
         versionName "1.0"
     }

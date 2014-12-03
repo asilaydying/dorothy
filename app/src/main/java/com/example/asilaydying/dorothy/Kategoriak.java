@@ -44,9 +44,12 @@ public class Kategoriak extends Activity {
     ProgressBar prgLoading;
     String KategoriakLink;
     String user;
+    ProgressBar preLoader;
 
 
-    MenuItem item;
+    MenuItem kosarmenuitem;
+    MenuItem logoutmenuitem;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,21 +61,20 @@ public class Kategoriak extends Activity {
         try {
 
             SharedPreferences settings = getSharedPreferences(GlobalHelper.PrefFileUserData, 0);
-            user= settings.getString("username", null);
-            if (user==null)
-            {
+            user = settings.getString("username", null);
+            if (user == null) {
                 SharedPreferences.Editor editor = settings.edit();
                 editor.putString("username", "zabomate@gmail.com");
                 editor.commit();
             }
-            user= settings.getString("username", null);
+            user = settings.getString("username", null);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
 
         adapter = new KategoriakListaAdapter(Kategoriak.this);
-
+        preLoader = (ProgressBar) findViewById(R.id.preLoader);
         listView = (ListView) findViewById(R.id.listCategory);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -93,11 +95,42 @@ public class Kategoriak extends Activity {
         });
 
         KategoriakLink = "http://dorothy.hu/Android/GetKategoriakJson";
-        new getDataTask().execute();
-    }
 
-    void clearData() {
-        kategoriakLista.clear();
+        MyDownloadManager manager = new MyDownloadManager(KategoriakLink);
+
+        manager.setOnDownloadListener(new MyDownloadManager.OnDownloadListener() {
+            @Override
+            public void onDownloadSuccess(String message) {
+                try {
+                    JSONArray data = new JSONArray(message);
+
+                    for (int i = 0; i < data.length(); i++) {
+                        JSONObject object = data.getJSONObject(i);
+
+                        KategoriakItem item = new KategoriakItem();
+                        item.Category_ID = Long.parseLong(object.getString("ID"));
+                        item.Category_name = object.getString("KategoriaNev");
+                        // Category_image.add(category.getString("Category_image"));
+
+                        String path = GlobalHelper.KategoriaKepLink + item.Category_ID + ".jpg";
+                        item.KategoriaKep = GlobalHelper.CheckFile(object.getString("ID"), object.getString("PictureFileSize"), path, getApplicationContext());
+
+                        kategoriakLista.add(item);
+                    }
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            listView.setAdapter(adapter);
+                            preLoader.setVisibility(View.GONE);
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+        manager.start();
     }
 
 
@@ -107,8 +140,8 @@ public class Kategoriak extends Activity {
         getMenuInflater().inflate(R.menu.kategoriak, menu);
 
         try {
-            item = menu.findItem(R.id.action_settings);
-            item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            kosarmenuitem = menu.findItem(R.id.action_settings);
+            kosarmenuitem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
 
@@ -117,6 +150,14 @@ public class Kategoriak extends Activity {
                     startActivity(intent);
 
                     return false;
+                }
+            });
+            logoutmenuitem = menu.findItem(R.id.logout);
+            logoutmenuitem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    GlobalHelper.LogOut(Kategoriak.this);
+                    return true;
                 }
             });
         } catch (Exception e) {
@@ -136,105 +177,5 @@ public class Kategoriak extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public class getDataTask extends AsyncTask<Void, Void, Void> {
-
-        // show progressbar first
-        getDataTask() {
-//            if(!prgLoading.isShown()){
-//                prgLoading.setVisibility(0);
-//                txtAlert.setVisibility(8);
-//            }
-        }
-
-        @Override
-        protected Void doInBackground(Void... arg0) {
-            // TODO Auto-generated method stub
-            // parse json data from server in background
-            parseJSONData();
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            // TODO Auto-generated method stub
-            // when finish parsing, hide progressbar
-//            prgLoading.setVisibility(8);
-            listView.setAdapter(adapter);
-            // if internet connection and data available show data on list
-            // otherwise, show alert text
-//            if((Category_ID.size() > 0) && (IOConnect == 0)){
-//                listCategory.setVisibility(0);
-//                listCategory.setAdapter(cla);
-//            }else{
-//                txtAlert.setVisibility(0);
-//            }
-        }
-    }
-
-    public void parseJSONData() {
-
-        clearData();
-
-        try {
-            // request data from Category API
-            HttpClient client = new DefaultHttpClient();
-            HttpConnectionParams.setConnectionTimeout(client.getParams(), 15000);
-            HttpConnectionParams.setSoTimeout(client.getParams(), 15000);
-            HttpUriRequest request = new HttpGet(KategoriakLink);
-            HttpResponse response = client.execute(request);
-            InputStream atomInputStream = response.getEntity().getContent();
-            BufferedReader in = new BufferedReader(new InputStreamReader(atomInputStream));
-
-            String line;
-            String str = "";
-            while ((line = in.readLine()) != null) {
-                str += line;
-            }
-
-            // parse json data and store into arraylist variables
-            //JSONObject json = new JSONObject(str);
-            JSONArray data = new JSONArray(str);
-
-            for (int i = 0; i < data.length(); i++) {
-                JSONObject object = data.getJSONObject(i);
-
-//                JSONObject category = object.getJSONObject("Category");
-                KategoriakItem item = new KategoriakItem();
-                item.Category_ID = Long.parseLong(object.getString("ID"));
-                item.Category_name = object.getString("KategoriaNev");
-                // Category_image.add(category.getString("Category_image"));
-                kategoriakLista.add(item);
-
-            }
-
-            for (int i = 0; i < kategoriakLista.size(); i++) {
-                String path = GlobalHelper.KategoriaKepLink + kategoriakLista.get(i).Category_ID + ".jpg";
-                Bitmap bmp = null;
-                try {
-                    bmp = BitmapFactory.decodeStream(new URL(path).openConnection().getInputStream());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                kategoriakLista.get(i).KategoriaKep = bmp;
-            }
-
-
-        } catch (MalformedURLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            //IOConnect = 1;
-            e.printStackTrace();
-        } catch (JSONException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }

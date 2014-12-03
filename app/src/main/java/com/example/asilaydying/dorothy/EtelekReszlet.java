@@ -1,5 +1,6 @@
 package com.example.asilaydying.dorothy;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.DownloadManager;
 import android.content.Intent;
@@ -9,11 +10,13 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +38,7 @@ public class EtelekReszlet extends Activity {
     String additionalID;
     Boolean NeedAdditional;
     ListView listView;
+    ProgressBar preLoader;
 
     String user;
     MenuItem item;
@@ -50,9 +54,14 @@ public class EtelekReszlet extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_etelek_reszlet);
 
+        ActionBar actionBar = getActionBar();
+        actionBar.setHomeButtonEnabled(true);
+
+
+
         SharedPreferences settings = getSharedPreferences(GlobalHelper.PrefFileUserData, 0);
         user = settings.getString("username", null);
-
+        preLoader = (ProgressBar) findViewById(R.id.preLoader);
         imageView = (ImageView) findViewById(R.id.EtelReszletKep);
         ar = (TextView) findViewById(R.id.EtelReszletesAr);
         leiras = (TextView) findViewById(R.id.EtelReszletLeiras);
@@ -87,13 +96,10 @@ public class EtelekReszlet extends Activity {
         imageView.setImageBitmap(bmp);
 
 
-
-
         MyDownloadManager additionalManager = new MyDownloadManager("http://dorothy.hu/Android/GetEtelekByKategoriaJson/" + additionalID);
 
 
         adapter = new EtelekReszletListaAdapter(EtelekReszlet.this);
-
 
 
         additionalManager.setOnDownloadListener(new MyDownloadManager.OnDownloadListener() {
@@ -132,13 +138,13 @@ public class EtelekReszlet extends Activity {
 
         AddButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 String link = "http://dorothy.hu/Android/KosarbaKorettel?UserName=" + user + "&productid=" + ID.toString();
 
-                link+="&mennyiseg="+ count.getText();
+                link += "&mennyiseg=" + count.getText();
 
-                for(int i = 0; i < etelekreszleteklista.size(); i++)  {
-                    link+="&additionalok="+etelekreszleteklista.get(i).getAddID();
+                for (int i = 0; i < etelekreszleteklista.size(); i++) {
+                    link += "&additionalok=" + etelekreszleteklista.get(i).getAddID();
                 }
 
                 MyDownloadManager manager = new MyDownloadManager(link);
@@ -151,6 +157,8 @@ public class EtelekReszlet extends Activity {
                                 @Override
                                 public void run() {
                                     Toast.makeText(getApplicationContext(), "A termék a kosárba került", Toast.LENGTH_LONG).show();
+                                    GlobalHelper.EnableButton(v);
+                                    preLoader.setVisibility(View.GONE);
                                     finish();
                                 }
                             });
@@ -159,6 +167,8 @@ public class EtelekReszlet extends Activity {
                                 @Override
                                 public void run() {
                                     Toast.makeText(getApplicationContext(), "Hiba történt!", Toast.LENGTH_LONG).show();
+                                    GlobalHelper.EnableButton(v);
+                                    preLoader.setVisibility(View.GONE);
                                 }
                             });
 
@@ -166,6 +176,8 @@ public class EtelekReszlet extends Activity {
                     }
                 });
                 manager.start();
+                GlobalHelper.DisableButton(v);
+                preLoader.setVisibility(View.VISIBLE);
             }
         });
         pluszButton.setOnClickListener(new View.OnClickListener() {
@@ -189,15 +201,17 @@ public class EtelekReszlet extends Activity {
             @Override
             public void onClick(View v) {
                 int darab = Integer.parseInt(String.valueOf(count.getText()));
-                count.setText(String.valueOf(--darab));
-                if (NeedAdditional) {
-                    etelekreszleteklista.remove(etelekreszleteklista.size() - 1);
-                    listView.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            listView.setAdapter(adapter);
-                        }
-                    });
+                if (darab > 0) {
+                    count.setText(String.valueOf(--darab));
+                    if (NeedAdditional) {
+                        etelekreszleteklista.remove(etelekreszleteklista.size() - 1);
+                        listView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                listView.setAdapter(adapter);
+                            }
+                        });
+                    }
                 }
             }
         });
@@ -206,32 +220,37 @@ public class EtelekReszlet extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        MyDownloadManager mainManager= new MyDownloadManager(GlobalHelper.BaseAndroidURL+"KosarLekerdez?UserName="+user+"&productid="+ID);
+
+        InputMethodManager inputManager = (InputMethodManager) getSystemService(this.INPUT_METHOD_SERVICE);
+
+        inputManager.hideSoftInputFromWindow(new View(this).getWindowToken(), 0);
+
+        preLoader.setVisibility(View.VISIBLE);
+        MyDownloadManager mainManager = new MyDownloadManager(GlobalHelper.BaseAndroidURL + "KosarLekerdez?UserName=" + user + "&productid=" + ID);
         mainManager.setOnDownloadListener(new MyDownloadManager.OnDownloadListener() {
             @Override
             public void onDownloadSuccess(String message) {
                 try {
-                    JSONObject object= new JSONObject(message);
+                    JSONObject object = new JSONObject(message);
 
                     JSONArray array = new JSONArray(object.getString("ProductsViewModel"));
 
                     etelekreszleteklista.clear();
 
+
                     for (int i = 0; i < array.length(); i++) {
                         final JSONObject obj = array.getJSONObject(i);
 
-                        if (obj.getBoolean("IsAdditionalFood"))
-                        {
-                            EtelekReszletItem item = new EtelekReszletItem(obj.getString("ProductName"),obj.getString("productId"));
-
+                        if (obj.getBoolean("IsAdditionalFood")) {
+                            EtelekReszletItem item = new EtelekReszletItem(obj.getString("ProductName"), obj.getString("productId"));
                             etelekreszleteklista.add(item);
-                        }
-                        else {
+                        } else {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     try {
-                                        count.setText(obj.getString("ProductCnt"));
+                                        int productcount = Integer.parseInt(obj.getString("ProductCnt"));
+                                        count.setText(String.valueOf(productcount));
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
@@ -239,15 +258,26 @@ public class EtelekReszlet extends Activity {
                             });
                         }
                     }
+
+                    if (array.length() > 0 && NeedAdditional) {
+                        JSONObject obj = array.getJSONObject(0);
+                        int productcount = Integer.parseInt(obj.getString("ProductCnt"));
+                        int emptyfields = productcount - array.length() + 1;
+                        for (int i = 0; i < emptyfields; i++) {
+                            etelekreszleteklista.add(new EtelekReszletItem(addlista.get(0), addlistakey.get(0)));
+                        }
+                    } else if (NeedAdditional) {
+                        etelekreszleteklista.add(new EtelekReszletItem(addlista.get(0), addlistakey.get(0)));
+                    }
+
                     listView.post(new Runnable() {
                         @Override
                         public void run() {
                             listView.setAdapter(adapter);
+                            preLoader.setVisibility(View.GONE);
                         }
                     });
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -294,6 +324,10 @@ public class EtelekReszlet extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+            return true;
+        }
+        if (id == android.R.id.home) {
+            this.finish();
             return true;
         }
         return super.onOptionsItemSelected(item);

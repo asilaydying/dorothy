@@ -14,7 +14,6 @@
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -28,7 +27,7 @@
         </activity>
         <activity
             android:name=".Kategoriak"
-            android:label="@string/title_activity_kategoriak" >
+            android:label="@string/title_activity_kategoriak">
         </activity>
         <activity
             android:name=".Etelek"
@@ -36,7 +35,8 @@
         </activity>
         <activity
             android:name=".EtelekReszlet"
-            android:label="@string/title_activity_etelek_reszlet" >
+            android:label="@string/title_activity_etelek_reszlet"
+            android:windowSoftInputMode="stateHidden">
         </activity>
         <activity
             android:name=".Kosar"
@@ -44,7 +44,8 @@
         </activity>
         <activity
             android:name=".CimValasztas"
-            android:label="@string/title_activity_cim_valasztas" >
+            android:label="@string/title_activity_cim_valasztas"
+            android:windowSoftInputMode="stateHidden">
         </activity>
         <activity
             android:name=".Megerosites"
