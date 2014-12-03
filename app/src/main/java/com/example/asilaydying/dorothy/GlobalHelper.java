@@ -7,7 +7,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Environment;
+import android.view.View;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -37,12 +39,11 @@ public class GlobalHelper {
             {
                 if (Long.parseLong(size) == file.length())//ugyanaz a fájl
                 {
-                    fis= new FileInputStream(file);
+                    fis = new FileInputStream(file);
 
                     byte[] buffer = new byte[(int) file.length()];
                     int len = 0;
-                    while ((len = fis.read(buffer)) != -1)
-                    {
+                    while ((len = fis.read(buffer)) != -1) {
                     }
 
                     Bitmap bitmap = BitmapFactory.decodeByteArray(buffer, 0, buffer.length);
@@ -50,7 +51,7 @@ public class GlobalHelper {
                     return bitmap;
                 } else {
                     DownloadImage(id, path, context);
-                    return CheckFile(id,size,path,context);
+                    return CheckFile(id, size, path, context);
                 }
             } else//nem létezik a fájl
             {
@@ -122,31 +123,39 @@ public class GlobalHelper {
         return CurrentUser;
     }
 
-    private static  String CurrentUser;
+    private static String CurrentUser;
 
-    public static void CheckLogin(Context ctx)
-    {
+    public static void CheckLogin(Context ctx) {
         SharedPreferences settings = ctx.getSharedPreferences(GlobalHelper.PrefFileUserData, 0);
         CurrentUser = settings.getString("username", null);
     }
-    public static void LogOut(Context ctx)
-    {
+
+    public static void LogOut(Context ctx) {
         SharedPreferences settings = ctx.getSharedPreferences(GlobalHelper.PrefFileUserData, 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.remove("username");
         editor.commit();
 
-        Intent intent = new Intent(ctx,MyActivity.class);
+        Intent intent = new Intent(ctx, MyActivity.class);
         ctx.startActivity(intent);
         ((Activity) ctx).finish();
     }
-    public static boolean isValidEmail(String email)
-    {
-        String emailRegex ="^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-        if(email.matches(emailRegex))
-        {
+
+    public static boolean isValidEmail(String email) {
+        String emailRegex = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+        if (email.matches(emailRegex)) {
             return true;
         }
         return false;
     }
+
+    public static void DisableButton(View v) {
+        v.setBackgroundColor(Color.parseColor("#808080"));
+        v.setEnabled(false);
+    }
+    public static void EnableButton(View v) {
+        v.setBackgroundColor(Color.parseColor("#fff4bf3b"));
+        v.setEnabled(true);
+    }
+
 }

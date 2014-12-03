@@ -127,7 +127,7 @@ public class CimValasztas extends Activity {
 
         btnmegerosit.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 int radioButtonID = cimekgroup.getCheckedRadioButtonId();
                 final RadioButton radioButton = (RadioButton) cimekgroup.findViewById(radioButtonID);
                 final int id = (Integer) radioButton.getTag();
@@ -153,7 +153,9 @@ public class CimValasztas extends Activity {
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            Toast.makeText(getApplicationContext(), "Nem sikerült felvenni az új cimet!", Toast.LENGTH_LONG).show();
+                                            Toast.makeText(CimValasztas.this, "Nem sikerült felvenni az új cimet!", Toast.LENGTH_LONG).show();
+                                            GlobalHelper.EnableButton(v);
+                                            preLoader.setVisibility(View.GONE);
                                         }
                                     });
                                 } else {
@@ -169,6 +171,10 @@ public class CimValasztas extends Activity {
                                                 intent.putExtra("cimid", object.getInt("CimId"));
 
                                                 startActivity(intent);
+
+                                                GlobalHelper.EnableButton(v);
+                                                preLoader.setVisibility(View.GONE);
+
                                             } catch (Exception e) {
                                                 e.printStackTrace();
                                             }
@@ -178,6 +184,10 @@ public class CimValasztas extends Activity {
                             }
                         });
                         cimManager.start();
+
+                        GlobalHelper.DisableButton(v);
+                        preLoader.setVisibility(View.VISIBLE);
+
                     }
                 } else {
                     Intent intent = new Intent(CimValasztas.this, Megerosites.class);

@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -108,7 +109,7 @@ public class Megerosites extends Activity {
 
         savebutton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 String link = "http://dorothy.hu/Android/befejez?UserName=" + user + "&addressid=" + cimid + "&Megjegyzes=" + Uri.encode(String.valueOf(megjegyzes.getText()));
 
                 final MyDownloadManager downloadManager = new MyDownloadManager(link);
@@ -120,6 +121,14 @@ public class Megerosites extends Activity {
                                 @Override
                                 public void run() {
                                     Toast.makeText(getApplicationContext(), "Sikeres rendelés leadás!", Toast.LENGTH_LONG).show();
+                                    GlobalHelper.EnableButton(v);
+                                    preLoader.setVisibility(View.GONE);
+
+                                    Intent intent = new Intent(Megerosites.this, Kategoriak.class);
+
+                                    startActivity(intent);
+
+                                    finish();
                                 }
                             });
 
@@ -127,7 +136,9 @@ public class Megerosites extends Activity {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toast.makeText(getApplicationContext(), "Nem sikerült a rendelés leadása!", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(Megerosites.this, "Nem sikerült a rendelés leadása!", Toast.LENGTH_LONG).show();
+                                    GlobalHelper.EnableButton(v);
+                                    preLoader.setVisibility(View.GONE);
                                 }
                             });
                         }
@@ -135,7 +146,8 @@ public class Megerosites extends Activity {
                 });
 
                 downloadManager.start();
-
+                GlobalHelper.DisableButton(v);
+                preLoader.setVisibility(View.VISIBLE);
             }
         });
 

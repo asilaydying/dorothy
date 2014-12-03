@@ -138,7 +138,7 @@ public class EtelekReszlet extends Activity {
 
         AddButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 String link = "http://dorothy.hu/Android/KosarbaKorettel?UserName=" + user + "&productid=" + ID.toString();
 
                 link += "&mennyiseg=" + count.getText();
@@ -157,6 +157,8 @@ public class EtelekReszlet extends Activity {
                                 @Override
                                 public void run() {
                                     Toast.makeText(getApplicationContext(), "A termék a kosárba került", Toast.LENGTH_LONG).show();
+                                    GlobalHelper.EnableButton(v);
+                                    preLoader.setVisibility(View.GONE);
                                     finish();
                                 }
                             });
@@ -165,6 +167,8 @@ public class EtelekReszlet extends Activity {
                                 @Override
                                 public void run() {
                                     Toast.makeText(getApplicationContext(), "Hiba történt!", Toast.LENGTH_LONG).show();
+                                    GlobalHelper.EnableButton(v);
+                                    preLoader.setVisibility(View.GONE);
                                 }
                             });
 
@@ -172,6 +176,8 @@ public class EtelekReszlet extends Activity {
                     }
                 });
                 manager.start();
+                GlobalHelper.DisableButton(v);
+                preLoader.setVisibility(View.VISIBLE);
             }
         });
         pluszButton.setOnClickListener(new View.OnClickListener() {
