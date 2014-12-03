@@ -7,7 +7,7 @@
     android:paddingRight="0dp"
     android:paddingTop="0dp"
     android:background="@drawable/background"
-    tools:context="com.example.asilaydying.dorothy.EtelekReszlet">
+    tools:context="hu.uniobuda.nik.dorothy.EtelekReszlet">
 
     <!--<RelativeLayout-->
     <!--android:id="@+id/lytTitlebar"-->

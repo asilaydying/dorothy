@@ -1,4 +1,4 @@
-package com.example.asilaydying.dorothy;
+package hu.uniobuda.nik.dorothy;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -13,6 +13,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import hu.uniobuda.nik.dorothy.R;
 
 
 public class MyActivity extends Activity {

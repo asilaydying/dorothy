@@ -1,4 +1,4 @@
-package com.example.asilaydying.dorothy;
+package hu.uniobuda.nik.dorothy;
 
 /**
  * Created by supergep on 2014.11.14..

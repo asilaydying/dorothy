@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.asilaydying.dorothy" >
+    package="hu.uniobuda.nik.dorothy" >
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -10,7 +10,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".MyActivity"
+            android:name="hu.uniobuda.nik.dorothy.MyActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,33 +22,33 @@
             android:label="@string/title_activity_category_list" >
         </activity>
         <activity
-            android:name=".Second"
+            android:name="hu.uniobuda.nik.dorothy.Second"
             android:label="@string/title_activity_second" >
         </activity>
         <activity
-            android:name=".Kategoriak"
+            android:name="hu.uniobuda.nik.dorothy.Kategoriak"
             android:label="@string/title_activity_kategoriak">
         </activity>
         <activity
-            android:name=".Etelek"
+            android:name="hu.uniobuda.nik.dorothy.Etelek"
             android:label="@string/title_activity_etelek" >
         </activity>
         <activity
-            android:name=".EtelekReszlet"
+            android:name="hu.uniobuda.nik.dorothy.EtelekReszlet"
             android:label="@string/title_activity_etelek_reszlet"
             android:windowSoftInputMode="stateHidden">
         </activity>
         <activity
-            android:name=".Kosar"
+            android:name="hu.uniobuda.nik.dorothy.Kosar"
             android:label="@string/title_activity_kosar" >
         </activity>
         <activity
-            android:name=".CimValasztas"
+            android:name="hu.uniobuda.nik.dorothy.CimValasztas"
             android:label="@string/title_activity_cim_valasztas"
             android:windowSoftInputMode="stateHidden">
         </activity>
         <activity
-            android:name=".Megerosites"
+            android:name="hu.uniobuda.nik.dorothy.Megerosites"
             android:label="@string/title_activity_megerosites" >
         </activity>
     </application>

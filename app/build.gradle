@@ -5,7 +5,7 @@ android {
     buildToolsVersion "20.0.0"
 
     defaultConfig {
-        applicationId "com.example.asilaydying.dorothy"
+        applicationId "hu.uniobuda.nik.dorothy"
         minSdkVersion 15
         targetSdkVersion 16
         versionCode 1

@@ -1,4 +1,4 @@
-package com.example.asilaydying.dorothy;
+package hu.uniobuda.nik.dorothy;
 
 import android.app.Activity;
 import android.content.Context;
@@ -8,10 +8,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.RadioButton;
 import android.widget.Spinner;
-import android.widget.TextView;
+
+import hu.uniobuda.nik.dorothy.R;
 
 /**
  * Created by supergep on 2014.11.14..

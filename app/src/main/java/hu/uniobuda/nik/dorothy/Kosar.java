@@ -1,4 +1,4 @@
-package com.example.asilaydying.dorothy;
+package hu.uniobuda.nik.dorothy;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -15,7 +15,8 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.TableRow.LayoutParams;
-import android.widget.Toast;
+
+import hu.uniobuda.nik.dorothy.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -181,17 +182,17 @@ public class Kosar extends Activity {
             holder.btnmodosit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent= new Intent(Kosar.this, EtelekReszlet.class);
+                    Intent intent = new Intent(Kosar.this, EtelekReszlet.class);
                     KosarItem item = (KosarItem) v.getTag();
-                    intent.putExtra("etelID",item.getProductId());
-                    intent.putExtra("eteladdID",item.getAdditionalCategory());
-                    intent.putExtra("needaddID",Boolean.parseBoolean(item.getNeedAdditional()));
+                    intent.putExtra("etelID", item.getProductId());
+                    intent.putExtra("eteladdID", item.getAdditionalCategory());
+                    intent.putExtra("needaddID", Boolean.parseBoolean(item.getNeedAdditional()));
 
-                    intent.putExtra("etelNev",item.getProductName());
-                    intent.putExtra("etelAr",(Integer)(Integer.parseInt(item.getProductAmountSum())/Integer.parseInt(item.getProductCnt())));
-                    intent.putExtra("etelLeiras",item.getProductDetail());
-                    intent.putExtra("etelfilesize",item.getFileSize());
-                    intent.putExtra("etelLink",GlobalHelper.Website+item.getPictureLink().substring(1));
+                    intent.putExtra("etelNev", item.getProductName());
+                    intent.putExtra("etelAr", (Integer) (Integer.parseInt(item.getProductAmountSum()) / Integer.parseInt(item.getProductCnt())));
+                    intent.putExtra("etelLeiras", item.getProductDetail());
+                    intent.putExtra("etelfilesize", item.getFileSize());
+                    intent.putExtra("etelLink", GlobalHelper.Website + item.getPictureLink().substring(1));
 
                     startActivity(intent);
                 }

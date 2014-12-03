@@ -1,4 +1,4 @@
-package com.example.asilaydying.dorothy;
+package hu.uniobuda.nik.dorothy;
 
 import android.graphics.Bitmap;
 

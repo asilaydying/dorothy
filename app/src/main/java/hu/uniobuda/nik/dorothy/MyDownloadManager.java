@@ -1,4 +1,4 @@
-package com.example.asilaydying.dorothy;
+package hu.uniobuda.nik.dorothy;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
